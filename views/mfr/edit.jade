@@ -1,0 +1,34 @@
+extends ../layout
+
+
+block content
+  m = mfr;
+  image = m.image && m.images[0];
+  fieldset
+    form.main(method="POST", enctype="multipart/form-data")
+      p
+        label(for="shortName") 生产商名称:
+        input#shortName(type="text", name="mfr[shortName]", value="#{m.shortName}")
+      p
+        label(for="desc") 生产商简介:
+        textarea#desc(name="mfr[desc]",rows="5")= m.desc
+      p
+        label(for="upload") 图片:
+        if image
+          img(src="/images/products/#{image}")
+        input#upload(type="file", name="image") 上传
+      p
+        label(for="date") 建厂时间:
+        input#date(type="text", name="mfr[date]",value= m.date)
+      p
+        label(for="province") 所在省份:
+        input#province(type="text", name="mfr[province]",value=m.province)
+      p
+        label(for="extraInfo") 其他信息:
+        input#extraInfo(type="text", name="mfr[extra]",value=m.extra)
+      input(type="submit", value="提交")
+      a(href='/mfrs/#{m._id}') 退出编辑
+    form(method="POST")
+      input(type="hidden", name="_method", value="delete")
+      input(type="submit", value="删除")
+  //- quit editing will redirect user to the detail page

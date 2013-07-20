@@ -1,0 +1,45 @@
+extends ../layout
+
+append css
+  link(rel='stylesheet', href='/stylesheets/product/show.css')
+block content
+  #details
+    if !product
+      '无该产品或该产品已注销'
+    else
+      if Array.isArray(product.images) && product.images[0]
+        img(src= '/images/products/' + product.images[0])
+      else
+        img(src='/images/no-image.png')
+      ul
+        li
+          span.label 产品名称:
+          span= product.name
+        li
+          span.label 所属厂商:
+          a(href='/mfrs/#{product.mfr._id}')= product.mfr.shortName
+        li
+          span.label 产品id:
+          span= product._id
+        li
+          span.label 种类:
+          //if Array.isArray(product.categories)
+          categ = product.categories[0]
+          if typeof categ === 'object'
+            a(href= '/products?category=' + categ._id)= categ.name
+          else
+            span 未分类
+        li
+          span.label 产地:
+          span= product['made-in']
+        li
+          span.label 产品描述:
+          div#desc: p= product.desc
+        if typeof product.extra === 'object'
+          each item, i in product.extra
+            li
+              span.label= i + ': '
+              span= item
+      div.control
+        a(href='/products/' + product._id + '/edit') 编辑
+        a(href='#') 返回(暂无用)

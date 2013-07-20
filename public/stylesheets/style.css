@@ -1,0 +1,78 @@
+/*layout*/
+/*header*/
+#header{
+    height:30px;
+    padding: 2px 10px 2px 10px;
+    background-color: #87A8C0;
+    position: relative;
+}
+
+#userinfo {
+    position: absolute;
+    right: 1%;
+    top: 20%;
+}
+#userinfo a {
+    color: white;
+    margin: 0 5px 0 5px;
+}
+
+
+#main {
+    width: 80%;
+    margin:  auto;
+    padding: 0 20px 0 20px;
+    min-height: 88%;
+    position: relative;
+    font-size: 16px;
+}
+
+
+
+
+#footer {
+    height:30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: #87A8C0;
+    color: #ffffff;
+}
+
+
+
+html, body {
+    height: 100%;
+  margin: 0;
+  padding: 0;
+  font: 14px "宋体", "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+
+/*normalize*/
+ul{
+    list-style: none;
+}
+
+
+
+
+/*effect*/
+#header, #footer {
+    box-shadow: 0px 1px 2px 1px rgba(128, 128, 128, 0.5);
+}
+
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+

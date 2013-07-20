@@ -1,0 +1,47 @@
+extends ../layout
+
+append js
+  script(src="/javascripts/product/form.js")
+
+append css
+  link(rel="stylesheet", href="/stylesheets/product/add.css")
+
+block content
+  fieldset
+    form.main(method="POST", enctype="multipart/form-data")
+      p
+        label(for="name") 产品名称:
+        input#name(type="text", name="product[name]", value=product.name)
+      p
+        label(for="categ-btn") 产品种类:
+        button#categ-btn(type="button") 选择种类
+        span= product.categories[0].name
+        div#categ-picker
+          include ../category/list
+        input(type="hidden", name="product[categories][0]", value=product.categories[0]._id)
+      p
+        label(for="desc") 产品描述:
+        textarea#desc(name="product[desc]",rows="5")= product.desc
+      p
+        label(for="upload") 图片:
+        input#upload(type="file", name="image")
+        br
+        img(src= '/images/products/' + product.images[0] || '/images/no-image.png')
+      #optional
+        p
+          label(for="weight") 产品重量:
+          input#weight(type="text", name="product[weight]", value=product.weight)
+        p
+          label(for="date") 上市日期:
+          input#date(type="text", name="product[date]", value=product.date)
+        p
+          label(for="made-in") 产地:
+          input#made-in(type="text", name="product[made-in]", value=product['made-in'])
+      a#add-input(href="#") 添加自定义信息
+      br
+      input(type="hidden", name="_method", value="PUT")
+      input(type="submit", value="提交")
+      button#goback-btn(type="button") 返回
+    form(method="POST", action="/products")
+      input(type="hidden", name="_method", value="delete")
+      input(type="submit", value="删除")

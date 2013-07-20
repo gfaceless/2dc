@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+  #list
+    unless products.length
+      #no-result 无结果
+    each product in products
+      url = '/products/' + product._id;
+      .item
+        #imageContainer
+          a(href= url, title= product.name)
+            if Array.isArray(product.images) && product.images[0]
+              img(src= '/images/products/' + product.images[0])
+            else
+              img(src='/images/no-image.png')
+
+        h3#name
+          a(href= url)= product.name
+        ul.info
+          li
+            categ = product.categories[0]
+            if categ
+              a(href="/products?category=#{categ._id}")= categ.name
+            else
+              a 未分类
+          li
+            span= product.desc
+          if typeof product.extra === 'object'
+            each item, i in product.extra
+              li
+                span= i + ": "
+                span= item
+          li
+            a(href="/mfrs/#{product.mfr._id}")= product.mfr.shortName

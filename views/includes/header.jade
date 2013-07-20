@@ -1,0 +1,13 @@
+#header
+  username = locals.username
+  a(href="/"): img(src="/images/logo.png", height="30px")
+  #userinfo
+    unless locals.logged_in
+      a(href="/users/login") 登录
+      |
+      a(href="/users/register") 注册
+    else
+      a(href="/users/#{username}")= username
+      |
+      a(href="/users/logout") 退出
+

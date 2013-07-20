@@ -1,0 +1,115 @@
+/*normalize*/
+dl, dt, dd {
+    margin: 0;
+    padding: 0;
+}
+
+/*position and display*/
+dl#categories {
+    position: relative;
+    display: inline-block;
+
+}
+
+#categories>dd {
+    display: none;
+    position: absolute;
+
+}
+
+#categories dl>dt, #categories dl>dd {
+    display: inline-block;
+}
+
+/*hover control*/
+#categories>dt:hover+dd, dl#categories>dd:hover {
+    display: block;
+}
+
+
+/*dimension*/
+#categories>dt {
+    /*width: 100px;*/
+    height: 30px;
+    padding: 5px 5px;
+
+}
+
+#categories>dt>a {
+    line-height: 30px;
+}
+
+#categories>dd {
+    /*  value `left` should be lvl1 dt's width
+        + lvl2 dt's margin left(negative)
+        - lvl2 dl's padding-left (which is equal to lvl2 dt's margin-left(neg))
+        resolves to lvl1 dt's content width
+    */
+    left: 95%;
+    top: 0;
+    margin-top: -10px;
+    width: 600px;
+    min-height: 100%;
+}
+
+#categories dl {
+    padding: 5px 10px 5px 120px;
+    overflow: hidden;
+    border-bottom: 1px solid #ccc;
+
+}
+
+#categories dl>dd, #categories dl>dt {
+    padding: 5px 10px;
+}
+
+#categories dl>dt {
+    float: left;
+    width: 100px;
+    margin-left: -120px;
+}
+
+/*border and color*/
+dl#categories {
+    background-color: white;
+
+}
+#categories>dt {
+    border: 1px solid #00B7FF;
+}
+
+#categories>dt:not(:first-child) {
+    border-top: none;
+}
+
+#categories dl>dd {
+    border-left: 1px solid #ccc;
+}
+
+
+dl#categories>dd {
+    background-color: #ffffff;
+    border: 2px solid #bbbbbb;
+}
+/*hover effect*/
+#categories dt:hover, #categories dl dd:hover {
+    background-color: #dddddd;
+}
+
+
+
+
+
+/*misc*/
+
+#categories>dt, #categories dl>dt {
+    text-align: center;
+}
+
+
+/*#categories dl>dt:after{
+    content: ' |';
+    color:red;
+}*/
+
+

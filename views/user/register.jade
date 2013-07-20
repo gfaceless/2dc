@@ -1,0 +1,14 @@
+extends ../layout
+block content
+  fieldset
+    form.main(method="POST")
+      div
+        label(for="name") 用户名:
+        input#name(type="text", name="user[name]")
+      div
+        label(for="password") 密码:
+        input#password(type="password", name="user[password]")
+      div
+        label(for="re-password") 再次输入密码:
+        input#re-password(type="password")
+      input(type="submit", value="创建新账户")

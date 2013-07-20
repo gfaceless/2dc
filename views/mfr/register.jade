@@ -1,0 +1,23 @@
+extends ../layout
+block content
+  fieldset
+    form.main(method="POST", enctype="multipart/form-data")
+      div
+        label(for="shortName") 厂商简称:
+        input#shortName(type="text", name="mfr[shortName]")
+      div
+        label(for="fullName") 厂商全称:
+        input#fullName(type="text", name="mfr[fullName]")
+      div
+        label(for="desc") 厂商介绍:
+        input#desc(type="text", name="mfr[desc]")
+      div
+        label(for="province") 所在省份
+        input#province(type="text", name="mfr[province]")
+      div
+        label(for="image") 图片:
+        input#image(type="file", name="mfr[image]")
+      div
+        label(for="extra") 其他信息:
+        input#extra(type="text", name="mfr[extra]")
+      input(type="submit")

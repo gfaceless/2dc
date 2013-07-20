@@ -1,0 +1,144 @@
+#control {
+    position: absolute;
+    margin: 15px 0 0 15px;
+    padding: 15px;
+    border: 3px solid #ddd;
+    right: 0;
+    top: 0;
+    background-color: white;
+}
+
+#title{
+    border-bottom: 1px solid #ccc;
+}
+
+
+/*#categories a {
+    *//*it seems that inline-element's vertical margin is ignored*//*
+    margin: 5px;
+    line-height: 24px;
+    padding: 5px 10px 5px 10px;
+    border: 1px solid #777;
+
+    box-shadow: 0px 1px 1px #ccc;
+}*/
+
+
+#message {
+    margin: 5px 10px;
+    padding: 5px;
+    font-size: 1.5em;
+    color: #F28095;
+    font-weight: bold;
+}
+
+
+#list {
+    padding: 5px 10px 5px 10px;
+}
+
+.item {
+    overflow: hidden;
+    width: 90%;
+    margin: 10px 0 10px 0;
+    padding: 10px 5px;
+    border-bottom: 1px solid #aaa;
+
+}
+.item a img {
+    width: 100px;
+}
+
+.item #imageContainer{
+    margin-right: 0;
+    float: left;
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+}
+.item h3 {
+    margin: 0;
+    font-size: 1em;
+}
+.item h3 a {
+    font-size: 1.5em;
+}
+.item .info {
+    margin: 10px 0 0;
+    padding: 0;
+    float: left;
+    width: 50%;
+}
+
+.item .info li {
+    padding: 5px 0;
+}
+
+
+
+
+#control li {
+    line-height: 30px;
+    border-bottom: 1px solid #ddd;
+}
+
+
+
+
+
+
+
+
+/*index page*/
+a.block {
+    margin: 5px 10px;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*form*/
+fieldset {
+    margin: 10px auto;
+}
+
+form input{
+    font-size: 100%;
+}
+
+form.main label {
+    width: 150px;
+    margin: 0 10px;
+    text-align: right;
+    float: left;
+    clear: left;
+}
+
+form.main input[type="submit"] {
+    margin: 0 0 0 20%;
+}
+
+form.main>div {
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+form .hidden{
+    display: none;
+}
+
+/*form new item*/
+
+form.main label input {
+    width: 4em;
+}

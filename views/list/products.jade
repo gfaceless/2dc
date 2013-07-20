@@ -1,0 +1,9 @@
+extends ../layout
+
+block content
+  each product in products
+    div
+      img(src= '/images/products/' + product.images[0]) what is this
+      p= product.name
+      p= product.category
+      p= product.description

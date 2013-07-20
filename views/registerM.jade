@@ -1,0 +1,11 @@
+extends layout
+block content
+  fieldset
+    form(method="POST", action="")
+      label 厂商名:
+        input(type="text", name="mname")
+      label 登录id:
+        input(type="text", name="username")
+      label 密码:
+        input(type="password", name="password")
+        input(type="submit")
