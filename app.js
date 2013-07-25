@@ -93,7 +93,7 @@ app.get('/yui3', combo.combine({rootPath: __dirname + '/public/yui'}), function 
   res.send(res.body);
 });
 
-app.use('/sub', require('../express/node_modules/express/examples/mvc'));
+//app.use('/sub', require('../express/node_modules/express/examples/mvc'));
 
 
 app.use(error.e404);
