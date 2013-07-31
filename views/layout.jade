@@ -9,13 +9,13 @@ html
         link(rel='stylesheet', href='/stylesheets/list.css')
         link(rel='stylesheet', href='/stylesheets/category/list.css')
       block js
-        script(src="/yui/3.9.0/build/yui/yui-min.js")
+        script(src="/yui/3.11.0/build/yui/yui-min.js")
   body
     include includes/header
     #main
       include message
       include includes/control
-      h1#title= title
+      //h1#title= title
       block content
     include includes/footer
     block js-bottom

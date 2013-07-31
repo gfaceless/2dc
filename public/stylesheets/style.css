@@ -1,30 +1,83 @@
+/*tmp*/
+.wrapper {
+    overflow: hidden;
+}
+
 /*layout*/
 /*header*/
 #header{
-    height:30px;
-    padding: 2px 10px 2px 10px;
-    background-color: #87A8C0;
+    margin: 0 auto;
+    background: #b10000;
+    min-width: 990px;
+    /*padding: 0 10px 20px;*/
     position: relative;
+    overflow: hidden;
 }
 
-#userinfo {
-    position: absolute;
-    right: 1%;
-    top: 20%;
+#userInfo {
+
+    text-align: right;
+    margin: 10px 30px 15px;
 }
-#userinfo a {
+#userInfo a {
     color: white;
     margin: 0 5px 0 5px;
 }
 
+#siteLogo {
+    float: left;
+    margin: 0 0 0 30px;
+}
+#siteSearch {
+    float: right;
+    margin: 0 30px;
+}
+#siteSearchInput {
+    color: #000;
+    margin: 0;
+    width: 632px;
+    height: 20px;
+    line-height: 20px;
+    padding: 7px 3px 7px 5px;
+    border: 0 none;
+    border-radius: 2px 0 0 2px;
+    font-weight: 900;
+    /*background: url("data:image/gif;base64,R0lGODlhAQADAJEAAObm5t3d3ff39wAAACH5BAAAAAAALAAAAAABAAMAAAICDFQAOw==") repeat-x scroll 0 0 transparent;*/
+}
+
+
+#siteSearchBtn {
+    float: right;
+    width: 90px;
+    border: 0;
+    font-size: 14px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    color: #fff;
+    background: #462824 url(/images/index-sprites.png) 0 0 no-repeat;
+    background-position: 0 -111px;
+    line-height: 34px;
+    height: 34px;
+    overflow: hidden;
+    text-indent: -9999px;
+}
+
+#siteSearchBtn:hover {
+    background-color: #866150;
+    background-position: -90px -111px;
+}
+#siteNav {
+    margin: 15px 0 0;
+    min-width: 990px;
+    height: 30px;
+    font-size: 14px;
+    background: #8e0000 url(data:image/gif;base64,R0lGODlhAQAeAIAAAI4AAI8BACH5BAAAAAAALAAAAAABAB4AAAIHRGChy+2KCgA7) repeat-x;
+}
 
 #main {
-    width: 80%;
-    margin:  auto;
-    padding: 0 20px 0 20px;
+    margin:  0 auto;
     min-height: 88%;
     position: relative;
-    font-size: 16px;
 }
 
 
@@ -34,17 +87,18 @@
     height:30px;
     line-height: 30px;
     text-align: center;
-    background-color: #87A8C0;
-    color: #ffffff;
+    /*background-color: #b10000;*/
+    color: #616161;
 }
 
 
 
 html, body {
-    height: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
-  font: 14px "宋体", "Lucida Grande", Helvetica, Arial, sans-serif;
+  /*font: 14px "宋体", "Lucida Grande", Helvetica, Arial, sans-serif;*/
+  font: 12px/1.5 'Lucida Grande',tahoma,arial,\5b8b\4f53;
 }
 
 a {
@@ -61,9 +115,9 @@ ul{
 
 
 /*effect*/
-#header, #footer {
+/*#header, #footer {
     box-shadow: 0px 1px 2px 1px rgba(128, 128, 128, 0.5);
-}
+}*/
 
 a {
     text-decoration: none;

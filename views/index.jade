@@ -1,5 +1,28 @@
 extends layout
+
+append css
+  link(rel="stylesheet", href="/stylesheets/index.css")
+append js-bottom
+  script(src="/javascripts/slides.js")
 block content
-  a(href="/products").block 所有产品
-  a(href="/mfrs").block 所有企业
+  //a(href="/products").block 所有产品
+  //a(href="/mfrs").block 所有企业
+
   include category/list
+  // slides
+  #main-slides
+    ul.slides
+      li
+        img(src="/images/slides/1.jpg")
+      li
+        img(src="/images/slides/2.jpg")
+      li
+        img(src="/images/slides/3.jpg")
+    ul.controls
+      li.active
+        a(href="#slide-1") 1
+      li
+        a(href="#slide-2") 2
+      li
+        a(href="#slide-3") 3
+
