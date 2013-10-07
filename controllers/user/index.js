@@ -97,3 +97,10 @@ exports.login = login;
 exports.loginGet = loginGet;
 
 exports.logout = logout;
+
+exports.list = function (req, res){
+  User.find().populate('mfr').exec(function(err, users) {
+    if(err) throw err;
+    res.render('user/list', {title:'用户列表', users: users});
+  })
+}

@@ -1,4 +1,8 @@
-YUI().use('node', 'panel', 'paginator', 'event-hover', 'gallery-timer', function (Y) {
+YUI({
+  combine: true,
+  comboBase: '/yui3?',
+  root:'3.11.0/build/'
+}).use('node', 'panel', 'paginator', 'event-hover', 'gallery-timer', function (Y) {
   var mainSlides = Y.one('#main-slides'),
     slides = mainSlides.all('.slides li'),
     controls = mainSlides.all('.controls li'),

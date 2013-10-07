@@ -7,9 +7,10 @@ mixin iterate(el, level)
 
 #menu
   if categories
-    h2#categoriesHd= categories.name
-    dl#categories
-      if categories.children
+    h2.categoriesHd= categories.name
+    //- 这里的if else要怎么写才能节省？
+    if typeof index != 'undefined'
+      dl.categories.expanded
         each lvl1 in categories.children
           dt.lvl1: a(href=urlRoot + lvl1._id)= lvl1.name
           if lvl1.children
@@ -17,6 +18,16 @@ mixin iterate(el, level)
               each lvl2,i in lvl1.children
                 dl: dt.lvl2: a(href=urlRoot + lvl2._id)= lvl2.name
                   mixin iterate(lvl2, 3)
+    else
+      dl.categories
+        if categories.children
+          each lvl1 in categories.children
+            dt.lvl1: a(href=urlRoot + lvl1._id)= lvl1.name
+            if lvl1.children
+              dd
+                each lvl2,i in lvl1.children
+                  dl: dt.lvl2: a(href=urlRoot + lvl2._id)= lvl2.name
+                    mixin iterate(lvl2, 3)
   else
     p no menu
 

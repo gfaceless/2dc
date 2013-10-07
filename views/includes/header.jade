@@ -11,8 +11,8 @@ username = locals.username
       a(href="/users/logout") 退出
   .wrapper
     a#siteLogo(href="/"): img(src="/images/logo.png")
-    form#siteSearch
-      input#siteSearchInput(type="text",placeholder="搜索商品")
+    form#siteSearch(action="/products")
+      input#siteSearchInput(type="text",placeholder="搜索商品", name="name")
       button#siteSearchBtn(type="submit") 搜索
   #siteNav
 

@@ -1,6 +1,10 @@
 extends ../layout
 
+append js-bottom
+  script(src="/javascripts/product/list.js")
+
 block content
+  include ../category/list
   #list
     unless products.length
       #no-result 无结果
@@ -17,18 +21,19 @@ block content
         h3#name
           a(href= url)= product.name
         ul.info
-          li
+          li.categ
             categ = product.categories[0]
             if categ
               a(href="/products?category=#{categ._id}")= categ.name
             else
               a 未分类
-          li
-            span= product.desc
+          li.mfr 由
+            a(href="/mfrs/#{product.mfr._id}")= product.mfr.shortName
+            | 销售制造
+          //-li.desc
+          //-  span= product.desc
           if typeof product.extra === 'object'
             each item, i in product.extra
               li
                 span= i + ": "
                 span= item
-          li
-            a(href="/mfrs/#{product.mfr._id}")= product.mfr.shortName

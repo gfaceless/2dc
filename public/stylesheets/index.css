@@ -38,10 +38,10 @@
     display: inline;
     opacity: 0;
     filter: alpha(opacity=0);
-    -webkit-transition: opacity 0.3s ease-out;
-    -moz-transition: opacity 0.3s ease-out;
-    -o-transition: opacity 0.3s ease-out;
-    transition: opacity 0.3s ease-out;
+    -webkit-transition: opacity 0.5s ease-out;
+    -moz-transition: opacity .5s ease-out;
+    -o-transition: opacity .5s ease-out;
+    transition: opacity .5s ease-out;
 }
 
 #main-slides .slides .active {
@@ -53,20 +53,38 @@
 /* - C O N T R O L S - */
 
 #main-slides .controls {
-    width: 630px;
-    text-align: right;
-    margin: 3px 0 0;
-    padding: 8px 0 0;
-    position: relative;
+
+    position: absolute;
+    bottom: 20px;
+    right: 15%;
     z-index: 1;
 }
 
 #main-slides .controls li {
+    float: left;
     list-style: none;
-    display: inline;
+    margin-right: 10px;
 }
 
 #main-slides .controls a {
+    display: block;
+    width: 22px;
+    height: 22px;
+
+    text-align: center;
+    line-height: 22px;
+
+    color: #fff;
+    border-radius: 50%;
+    background-color: #444;
+    text-align: center;
+    font-family: arial, san-serif;
+
+    text-decoration: none;
+}
+
+/*original:*/
+/*#main-slides .controls a {
     display: inline-block;
     zoom: 1;
     *display: inline;
@@ -77,7 +95,7 @@
     line-height: 1.7em;
     color: #4A4A4A;
     font-family: arial, san-serif;
-}
+
 
 #main-slides.circles .controls a {
     text-indent: 100px;
@@ -87,15 +105,14 @@
     height: 12px;
     padding: 0;
 }
-
+}*/
 #main-slides .controls a:hover {
-    background-color: #bfdaff;
-    color: #000;
+    background-color: #f70;
 }
 
 #main-slides .controls .active a,
 #main-slides .controls .active a:hover {
-    background: #2647a0;
+    background: #f70;
     color: #ffffff;
 }
 
@@ -111,10 +128,10 @@
     color: #2a2a2a;
     width: 630px;
     line-height: 1.8em;
-    -webkit-transition: all 0.3s ease-out;
-    -moz-transition: all 0.3s ease-out;
-    -o-transition: all 0.3s ease-out;
-    transition: all 0.3s ease-out;
+    -webkit-transition: all .5s ease-out;
+    -moz-transition: all .5s ease-out;
+    -o-transition: all .5s ease-out;
+    transition: all .5s ease-out;
 }
 
 #main-slides:hover .paused {
@@ -122,8 +139,8 @@
     filter: alpha(opacity=100);
     left: 30px;
     letter-spacing: 1px;
-    -webkit-transition: all 0.3s ease-out;
-    -moz-transition: all 0.3s ease-out;
-    -o-transition: all 0.3s ease-out;
-    transition: all 0.3s ease-out;
+    -webkit-transition: all .5s ease-out;
+    -moz-transition: all .5s ease-out;
+    -o-transition: all .5s ease-out;
+    transition: all .5s ease-out;
 }

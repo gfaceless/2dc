@@ -34,44 +34,54 @@
 
 
 #list {
+    margin: auto;
+    max-width: 1200px;
     padding: 5px 10px 5px 10px;
+    overflow: hidden;
 }
 
 .item {
     overflow: hidden;
-    width: 90%;
+    float: left;
+    width: 227px;
+    height: 328px;
     margin: 10px 0 10px 0;
-    padding: 10px 5px;
+    padding: 10px 15px;
     border-bottom: 1px solid #aaa;
 
 }
 .item a img {
-    width: 100px;
+    width: 200px;
 }
-
+.item #imageContainer a {
+    display: block;
+    width: 200px;
+    height: 200px;
+    /*我想把其内图片垂直居中，怎么搞？*/
+    overflow: hidden;
+    padding: 10px;
+}
 .item #imageContainer{
-    margin-right: 0;
-    float: left;
-    width: 120px;
-    height: 120px;
     overflow: hidden;
 }
 .item h3 {
-    margin: 0;
+    text-align: center;
+    margin: 10px 0;
     font-size: 1em;
 }
 .item h3 a {
     font-size: 1.5em;
 }
-.item .info {
-    margin: 10px 0 0;
-    padding: 0;
-    float: left;
-    width: 50%;
-}
-
 .item .info li {
-    padding: 5px 0;
+    margin: 5px 0;
+}
+.item .info .categ {
+    text-align: right;
+    margin-right: 10px;
+}
+.item .info .mfr {
+    text-align: right;
+    margin-right: 10px;
 }
 
 

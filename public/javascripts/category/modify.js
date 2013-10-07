@@ -5,7 +5,6 @@
 Y = YUI({
   combine: true,
   comboBase: '/yui3?'
-//    root:''
 }).use('node', 'io', 'event', function (Y) {
 
     var categStr = '<input type="text" value="新类别">'

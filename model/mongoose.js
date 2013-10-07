@@ -47,6 +47,7 @@ categSchema.pre('save', function (next) {
 
 
 var productSchema = new Schema({
+  // TODO: name needs index
   name: {type: String, validate: lengthValidator, required: true},
   mfr: {type: ObjectId,    ref: 'Mfr',    required:true  },
   /* for multiple categories, schema should be something like this:

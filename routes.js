@@ -32,6 +32,8 @@ function startRoute(app) {
 
   // app.all prepare permission part (req.isSelf)
   // tell me about the performance
+
+  // it needs at least 2 params to go into this logic:
   app.all('/:name/:_id/:op?', function (req, res, next) {
     var mid = req.session.mid
       , id = req.params._id
@@ -104,10 +106,13 @@ function startRoute(app) {
   app.get('/users/register', user.add);
   app.post('/users/register', user.create);
 
+  // TODO: see if loginGet & login can be congregated:
   app.get('/users/login', user.loginGet);
   app.post('/users/login', user.login);
   app.get('/users/logout', requireLogin, user.logout);
 
+  app.get('/users/list', requireAdmin, user.list);
+  app.get('/users', requireAdmin, user.list);
 
   app.all('/mfrs/register', requireNonMfr);
   app.get('/mfrs/register', mfr.add);

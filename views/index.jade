@@ -12,17 +12,11 @@ block content
   // slides
   #main-slides
     ul.slides
-      li
-        img(src="/images/slides/1.jpg")
-      li
-        img(src="/images/slides/2.jpg")
-      li
-        img(src="/images/slides/3.jpg")
+      li.active: img(src="/images/slides/1.jpg")
+      li: img(src="/images/slides/2.jpg")
+      li: img(src="/images/slides/3.jpg")
     ul.controls
-      li.active
-        a(href="#slide-1") 1
-      li
-        a(href="#slide-2") 2
-      li
-        a(href="#slide-3") 3
+      li.active: a(href="#slide-1") 1
+      li: a(href="#slide-2") 2
+      li: a(href="#slide-3") 3
 

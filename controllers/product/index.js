@@ -60,10 +60,14 @@ exports.show = function (req, res, next) {
 exports.list = function list(req, res) {
   var category = req.query.category
     , mfr = req.query.mfr
+    , name = req.query.name
     , criteria = {};
 
   if (category) criteria.categories = category;
   if (mfr) criteria.mfr = mfr;
+  if (name) criteria.name = new RegExp('.*' + name + '.*', 'i');
+
+  console.log(criteria);
 
   Product.find(criteria)
     .populate('mfr categories')
