@@ -77,7 +77,7 @@ function login(req, res) {
 function logout(req, res) {
   // don't forget to consider CSRF
   req.session.logged_in = false;
-  res.redirect('back');
+  res.redirect('/');
 }
 
 exports.destroy = function (req, res) {

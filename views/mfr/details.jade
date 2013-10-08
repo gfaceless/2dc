@@ -24,6 +24,7 @@ block content
       li
         span.label 成立时间:
         span= m.date
-    div
+    if locals.isSelf
       a(href='/mfrs/' + m._id + '/edit') 编辑
-  a(href='/products/list?mfr=' + m._id)= m.shortName + '的全部产品'
+    else
+      a(href='/products/list?mfr=' + m._id)= m.shortName + '的全部产品'

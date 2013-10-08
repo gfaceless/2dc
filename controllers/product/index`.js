@@ -1,10 +1,10 @@
 // TODO: this file is too large. maybe split it into some small chunks in the same folder
 var crypto = require('crypto')
   , mongodb = require('mongodb')
-  , dbConnector = require('../../model/db')
+  , dbConnector = require('.././db')
   , fs = require('fs')
   , path = require('path')
-  , Product = require('../../model/product')
+  , Product = require('.././product')
   , mongoose = require('mongoose');
 
 

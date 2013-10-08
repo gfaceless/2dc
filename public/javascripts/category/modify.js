@@ -4,7 +4,8 @@
 
 Y = YUI({
   combine: true,
-  comboBase: '/yui3?'
+  comboBase: '/yui3?',
+  root:'3.11.0/build/'
 }).use('node', 'io', 'event', function (Y) {
 
     var categStr = '<input type="text" value="新类别">'

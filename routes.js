@@ -7,8 +7,7 @@
  */
 
 var user = require('./controllers/user')
-  , routes = require('./routes/')
-  , main = require('./controllers/main')
+  , main = require('./controllers/home')
   , product = require('./controllers/product')
   , mfr = require('./controllers/manufacturer')
   , category = require('./controllers/category')
@@ -30,28 +29,35 @@ var mongoose = require('mongoose')
 
 function startRoute(app) {
 
-  // app.all prepare permission part (req.isSelf)
+  // the following app.all prepare permission part (req.isSelf)
   // tell me about the performance
 
   // it needs at least 2 params to go into this logic:
+  // this logic is not intuitive, maybe change it:
+  // TODO: findById would be ran 2 times, use req.elem to pass the result.
   app.all('/:name/:_id/:op?', function (req, res, next) {
     var mid = req.session.mid
       , id = req.params._id
       , name = req.params.name
       , op = req.params.op
-      , candidates = ['mfrs', 'products', 'users'];
+      , candidates = ['mfrs', 'products', 'users']
+      , ex = ['login', 'register', 'logout', 'list'];
 
-    if(!~candidates.indexOf(name)) return next('route');
+    if(!~candidates.indexOf(name) || ~ex.indexOf(id)) return next('route');
+
+    // if no operation(not editing, not deleting), no permission check.
     // is toLowerCase necessary?
-    if(!op && req.route.method.toLowerCase() !== 'delete') return next('route');
+    // if(!op && req.route.method.toLowerCase() !== 'delete') return next('route');
 
     // TODO: make these methods in respective files or add as schema method:
     switch (name) {
       case 'mfrs':
         Mfr.findById(id, function (err, mfr) {
           if(err) return next(err);
+          if(!mfr) return next(makeError(404));
           if(mid && mfr._id.toString() === mid) {
             req.isSelf = true;
+            res.locals.isSelf = true;
           }
           next();
         })
@@ -61,8 +67,10 @@ function startRoute(app) {
           if(err) return next(err);
           if(!product) return next(makeError(404));
 
+
           if(mid && product.mfr.toString() === mid){
             req.isSelf = true;
+            res.locals.isSelf = true;
           }
           next();
         })
@@ -70,25 +78,22 @@ function startRoute(app) {
       case 'users':
         User.findById(id, function (err, user) {
           if(err) return next(err);
+          if(!user) return next(makeError(404));
           if(user.name === req.session.username) {
             req.isSelf = true;
+            res.locals.isSelf = true;
           }
           next();
         })
         break;
     }
-  }, requireSelf);
+
+  });
 
 
 
 
   app.get('/', main.index);
-
-  app.get('/check/:code', routes.check);
-  app.post('/upload', routes.upload);
-  app.get('/list/:type', routes.list);
-
-
 
   app.get('/products/register', requireMfr, product.add);
   app.post('/products/register', requireMfr, product.create);
@@ -97,9 +102,9 @@ function startRoute(app) {
   app.get('/products', product.list);
   app.get('/products/:_id', product.show);
 
-  app.get('/products/:_id/edit', product.edit);
-  app.put('/products/:_id/edit', product.update);
-  app.del('/products/:_id', product.destroy);
+  app.get('/products/:_id/edit', requireSelf, product.edit);
+  app.put('/products/:_id/edit', requireSelf, product.update);
+  app.del('/products/:_id', requireSelf, product.destroy);
 
 
   // synonym: sign up
@@ -122,8 +127,8 @@ function startRoute(app) {
   app.get('/mfrs', mfr.list);
 
   app.get('/mfrs/:_id', mfr.show);
-  app.get('/mfrs/:_id/edit', mfr.edit);
-  app.post('/mfrs/:_id/edit', mfr.update);
+  app.get('/mfrs/:_id/edit', requireSelf, mfr.edit);
+  app.post('/mfrs/:_id/edit', requireSelf, mfr.update);
 
 
   app.get('/sales/:code', sale.check)
@@ -175,46 +180,6 @@ function startRoute(app) {
     })
   }
   route(app, [category]);
-  /*var route = function (app, controllers){
-
-   var tmp = {
-   //crud
-   add: {noId: true},
-   create: {method: 'post', subpath:'', noId: true},
-
-   show: '',
-   list: {isPl: true},
-
-   edit: '',
-   update: {method: 'put', subpath:null},
-
-   destroy: {method: 'del', subpath: ''}
-   }
-   controllers.forEach(function(c) {
-
-   Object.keys(tmp).forEach(function(fnName){
-   var obj = tmp[fnName]
-   , method = obj.method || 'get'
-   , path
-   , pathPrefix
-   , mainpath
-   , subpath = (typeof obj.subpath === 'undefined') ? fnName : obj.subpath;
-   pathPrefix = (c.pathPrefix || '') + '/';
-   subpath = ( obj.noId || obj.isPl ? '' : '/:' + c.idField ) + (subpath ? '/'+subpath : '');
-   mainpath = (obj.isPl? c.plName : c.name);
-   path = '/' + pathPrefix +  mainpath + subpath;
-   console.log(fnName, method, path);
-
-   // we don't use c[fnName].bind(c)
-   // because later we will delete the function, leaving only the prototype
-   // bind will make it stay referenced (though deleted)
-   c[fnName] && app[method](path, function(){
-   c[fnName].apply(c, arguments);
-   });
-   })
-   })
-   }
-   route(app, [category]);*/
 
 }
 

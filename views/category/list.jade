@@ -9,7 +9,7 @@ mixin iterate(el, level)
   if categories
     h2.categoriesHd= categories.name
     //- 这里的if else要怎么写才能节省？
-    if typeof index != 'undefined'
+    if locals.categExpanded
       dl.categories.expanded
         each lvl1 in categories.children
           dt.lvl1: a(href=urlRoot + lvl1._id)= lvl1.name

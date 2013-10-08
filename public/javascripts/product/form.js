@@ -1,7 +1,7 @@
 Y = YUI({
   combine: true,
-  comboBase: '/yui3?'
-//    root:''
+  comboBase: '/yui3?',
+  root:'3.11.0/build/'
 }).use('node', 'event-outside', function (Y) {
     var form = Y.one('form')
       , submit = form.one('input[type="submit"]')
@@ -49,9 +49,9 @@ Y = YUI({
       });
     }
 
-    form.one('#goback-btn').on('click', function (e) {
+    /*form.one('#goback-btn').on('click', function (e) {
       history.back();
-    })
+    })*/
 
     fileBtn.on('change', function (e) {
       //TODO: now very fundamental, needs x-browser and be stronger

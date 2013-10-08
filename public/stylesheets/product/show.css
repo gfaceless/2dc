@@ -1,8 +1,13 @@
 
 /*the details page:*/
 #details {
-    margin: 10px auto;
+    width: 600px;
+    margin: 0 auto;
+    padding: 30px 70px;
+    border: 1px solid #ccc;
+    border-top: 0;
     overflow: hidden;
+    font-size: 14px;
 }
 
 
@@ -23,11 +28,11 @@
     width: 100px;
     margin: 0 20px;
 }
-#details #desc {
+#details .desc {
     float: left;
     width: 70%;
 }
-#details #desc p{
+#details .desc p{
     margin-top: 0;
 }
 #details .control a {

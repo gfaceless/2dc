@@ -1,7 +1,8 @@
 var mongoose = require('mongoose')
   , Mfr = mongoose.model('Mfr')
   , User = mongoose.model('User')
-  , uploadImage = require('../../model/upload').uploadImage;
+  , uploadImage = require('../../libs/upload.js').uploadImage
+  , error = require('../error.js');
 
 
 exports.add = function add(req, res) {
@@ -16,17 +17,17 @@ exports.add = function add(req, res) {
   }
 }
 
-exports.create = function create(req, res) {
+exports.create = function create(req, res, next) {
 
   function doCreate (err, mfr) {
-    if(err) throw err;
+    if(err) return next(err);
 
     Mfr.create(mfr, function (err, mfr) {
-      if (err) throw err;
+      if (err) return next(err);
       User.findOne({name: req.session.username}, function (err, user) {
         user.mfr = mfr;
         user.save(function (err, user) {
-          if (err) throw err;
+          if (err) return next(err);
           // user.mfr has been converted to ObjectId
           req.session.mid = user.mfr;
           req.flash('info', '您的公司已经注册成功');
@@ -54,17 +55,17 @@ exports.list = function list(req, res) {
   })
 };
 
-exports.show = function view(req, res) {
+exports.show = function view(req, res, next) {
 
   Mfr.findById(req.params['_id'], function (err, mfr) {
-    if (err) throw err;
+    if (err) return next(err);
     if (mfr) {
       res.render('mfr/details', {
         title: '生产厂商具体信息',
         mfr: mfr
       });
     } else {
-      throw 404;
+
     }
   })
 }

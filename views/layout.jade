@@ -5,17 +5,16 @@ html
       title= title
       meta(charset="utf-8")
       block css
+        link(rel='stylesheet', href='/stylesheets/normalize.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
-        link(rel='stylesheet', href='/stylesheets/list.css')
         link(rel='stylesheet', href='/stylesheets/category/list.css')
       block js
         script(src="/yui/3.11.0/build/yui/yui-min.js")
   body
     include includes/header
     #main
-      include message
+      include includes/message
       include includes/control
-      //h1#title= title
       block content
     include includes/footer
     block js-bottom

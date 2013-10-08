@@ -1,5 +1,5 @@
 var mongodb = require('mongodb')
-    , dbConnector = require('../../model/db')
+    , dbConnector = require('.././db')
     , crypto = require('crypto');
 
 var collectionU = dbConnector.collection('users');

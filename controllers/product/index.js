@@ -4,7 +4,7 @@ var crypto = require('crypto')
   , path = require('path')
   , mongoose = require('mongoose')
   , ObjectId = mongoose.Schema.Types.ObjectId
-  , uploadImage = require('../../model/upload').uploadImage
+  , uploadImage = require('../../libs/upload.js').uploadImage
 
 
 var Product = mongoose.model('Product');
@@ -12,7 +12,10 @@ var Product = mongoose.model('Product');
 exports.add = function add(req, res) {
   var mid = req.session.mid
 
-  if (mid) {res.render('product/add', {title: '添加/注册产品'});}
+  if (mid) {res.render('product/add', {
+    title: '添加/注册产品',
+    categExpanded: true
+  });}
 
 }
 
@@ -25,12 +28,11 @@ exports.create = function (req, res, next) {
   uploadImage({image: image, doc: product, path: 'products'}, create);
 
   function create(err, product) {
-    if (err) throw err;
+    if (err) return next(err);
     // such API leaves the possibilities for multiple creation
     Product.create(product, function (err, product) {
       // I think the error handling should be like this:
-      // if(err) return next(err);
-      if (err) throw err;
+      if(err) return next(err);
       req.flash('info', '上传产品成功！');
       res.redirect('/products/' + product._id);
     });
@@ -90,7 +92,8 @@ exports.edit = function edit(req, res) {
     if (!product)  throw 404;
     res.render('product/edit', {
       title: '编辑',
-      product: product
+      product: product,
+      categExpanded: true
     })
 
   })

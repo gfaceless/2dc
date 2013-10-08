@@ -30,7 +30,6 @@ function nonMfr(req, res, next) {
 function self(req, res, next) {
   // req.isSelf should be set in some specific request, like /:_id/edit
   if (req.isSelf) {
-    res.locals.isSelf = true;
     next();
   } else {
     req.flash('info', '没有权限');

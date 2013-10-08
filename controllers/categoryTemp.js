@@ -1,4 +1,4 @@
-var dbConnector = require('../model/db.js')
+var dbConnector = require('./db.js')
     , ObjectID = require('mongodb').ObjectID
     , collectionC = dbConnector.collection('categories');
 

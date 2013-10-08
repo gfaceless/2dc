@@ -34,12 +34,12 @@ block content
           span= product['made-in']
         li
           span.label 产品描述:
-          div#desc: p= product.desc
+          div.desc: p= product.desc
         if typeof product.extra === 'object'
           each item, i in product.extra
             li
               span.label= i + ': '
-              span= item
-      div.control
-        a(href='/products/' + product._id + '/edit') 编辑
-        a(href='#') 返回(暂无用)
+              span.desc= item
+      if locals.isSelf
+        div.control
+          a(href='/products/' + product._id + '/edit') 编辑

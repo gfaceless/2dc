@@ -1,5 +1,5 @@
 var mongodb = require('mongodb')
-    , dbConnector = require('../../model/db');
+    , dbConnector = require('.././db');
 
 var collectionM = dbConnector.collection('manufacturers');
 var collectionU = dbConnector.collection('users');

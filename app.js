@@ -2,15 +2,17 @@ var express = require('express')
 //    , routes = require('./routes')
   , http = require('http')
   , path = require('path')
-  , dbConnector = require('./model/db')
+  , dbConnector = require('./libs/db')
   , flash = require('connect-flash')
   , combo = require('combohandler')
   , error = require('./controllers/error');
 
-require('./model/mongoose');
+require('./libs/mongoose');
 
 var app = express();
 
+
+// I am doubting that the redundant history thing results from this:
 var allowCrossDomain = function (req, res, next) {
 //    res.header('Access-Control-Allow-Origin', config.allowedDomains);
 //    res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -35,7 +37,7 @@ var locals = function (req, res, next) {
 
 
 //app.set('env', 'production');
-console.log(app.settings.env);
+console.log('current env is: ' + app.settings.env);
 
 app.configure(function () {
   app.set('port', process.env.PORT || 3002);
@@ -56,12 +58,11 @@ app.configure(function () {
   app.use(express.cookieParser());
   app.use(express.session({secret: 'nothing'}));
 
-
   app.use(flash());
   app.use(locals);
 
   app.use(express.methodOverride());
-  app.use(allowCrossDomain);
+//  app.use(allowCrossDomain);
 
   // from SO:
   // Note that if you don't explicitly use the router,

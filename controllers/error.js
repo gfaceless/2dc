@@ -1,4 +1,3 @@
-
 var error = function (err, req, res, next) {
     // `throw 500` is different from `throw new Error(500)`
     // the former automatically gives it status property.
@@ -17,8 +16,10 @@ var error = function (err, req, res, next) {
             console.log(require('util').inspect(err, {depth: 4, showHidden: true}));*/
             error.e500(err, req, res, next);
             break;
-        default :
-            next(err);
+      default :
+        // TODO: uncomment it on the production server:
+        // error.e500(err, req, res, next);
+        next(err);
     }
 
 };
@@ -28,9 +29,8 @@ error.e500 = function (err, req, res, next) {
     res.render('errors/500', { title: 'error 500', error: err });
 }
 
-// two possibilities to be here:
-// 1. an invalid url
-// 2. arbitrary code by programmers, like `throw 404`
+// the last place to go (if program cannot find anything to route)
+// arbitrary code by programmers, like `throw 404` goes here<- is this true? I don't think so.
 error.e404 = function (req, res, next) {
     res.status(404);
 

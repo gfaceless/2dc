@@ -12,7 +12,7 @@ mongoose.connect('mongodb://localhost/2dc');
 // consider using regex
 function generateLengthValidator(start, end) {
   return [function (str) {
-    // if end if not defined, then end-test is passed.
+    // if end is not defined, then end-test is passed.
     var endTested = end ? str.length <= end : true;
     var startTested = str.length >= start;
     return  startTested && endTested;
@@ -123,7 +123,6 @@ productSchema.statics.doUpdate = function (update, fn) {
 }
 
 mfrSchema.statics.doUpdate = function (update, fn) {
-  console.log('here');
   var model = this;
   model.findById(update._id, function (err, doc) {
     if(err) throw err;
