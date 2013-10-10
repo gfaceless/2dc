@@ -96,7 +96,7 @@ app.get('/yui3', combo.combine({rootPath: __dirname + '/public/yui'}), function 
 
 //app.use('/sub', require('../express/node_modules/express/examples/mvc'));
 
-
+//if no url match, here it is:
 app.use(error.e404);
 app.use(error);
 

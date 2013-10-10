@@ -32,7 +32,8 @@ exports.create = function (req, res, next) {
     // such API leaves the possibilities for multiple creation
     Product.create(product, function (err, product) {
       // I think the error handling should be like this:
-      if(err) return next(err);
+      if(err)  return next(err);
+
       req.flash('info', '上传产品成功！');
       res.redirect('/products/' + product._id);
     });
@@ -69,8 +70,6 @@ exports.list = function list(req, res) {
   if (mfr) criteria.mfr = mfr;
   if (name) criteria.name = new RegExp('.*' + name + '.*', 'i');
 
-  console.log(criteria);
-
   Product.find(criteria)
     .populate('mfr categories')
     .limit(100)
@@ -102,7 +101,6 @@ exports.update = function update(req, res) {
 
   function doUpdate(err, product) {
     if (err) throw err;
-    console.log('ur');
     Product.doUpdate(product, function (err, doc) {
       req.flash('info', '编辑成功！');
       res.redirect('/products/' + id);
@@ -122,7 +120,14 @@ exports.update = function update(req, res) {
 
 }
 
-exports.destroy = function destory() {}
+exports.destroy = function destory(req, res, next) {
+  var id = req.params['_id'];
+  Product.findByIdAndRemove(id, function(err, doc) {
+    if(err) return next(err);
+    req.flash('info', '删除成功');
+    res.redirect('/products?mfr=' + doc.mfr);
+  })
+}
 
 function mixin(a, b, inc, ex) {
   inc = inc || [];

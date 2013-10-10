@@ -11,12 +11,16 @@ mongoose.connect('mongodb://localhost/2dc');
 
 // consider using regex
 function generateLengthValidator(start, end) {
-  return [function (str) {
+  var arr = [function (str) {
     // if end is not defined, then end-test is passed.
     var endTested = end ? str.length <= end : true;
     var startTested = str.length >= start;
     return  startTested && endTested;
-  }, util.format('字符串长度应该在%s到%s之间', start, end || '无限制')]
+  }, '字符串长度应该在' + start + '到' + (end || '无限制') + '之间'
+
+  /* util.format('字符串长度应该在%s到%s之间', start, end || '无限制')*/];
+  return arr;
+
 }
 
 // TODO: make it be another file, where the validator can be reused by xhr.

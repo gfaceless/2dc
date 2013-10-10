@@ -1,10 +1,11 @@
 var error = function (err, req, res, next) {
     // `throw 500` is different from `throw new Error(500)`
     // the former automatically gives it status property.
-    console.log(err);
+  console.log('here we are at the custom error handler,\nthe error is:\n')
+  console.log(err);
     switch (err.status) {
         case 404:
-            error.e404(req, res, next);
+            return error.e404(req, res, next);
             break;
         // does it mean we'll never see that pretty `default error page` again?
         case 500:
@@ -14,12 +15,22 @@ var error = function (err, req, res, next) {
             console.log(err.stack);
             console.log(Object.getOwnPropertyDescriptor(err, 'message'));
             console.log(require('util').inspect(err, {depth: 4, showHidden: true}));*/
-            error.e500(err, req, res, next);
+            return error.e500(err, req, res, next);
             break;
       default :
-        // TODO: uncomment it on the production server:
-        // error.e500(err, req, res, next);
-        next(err);
+
+    }
+    switch  (err.name) {
+      case 'ValidationError':
+        // here we assume ValidationError always has err.errors.fieldName
+        var e = err.errors[Object.keys(err.errors)[0]];
+        return error.e500(e, req, res, next);
+        // break seems unnecessary
+        break;
+      case 'CastError':
+        console.log('though CastError, we tell the viewer the url does not exist');
+        return error.e404(req, res, next);
+        break;
     }
 
 };
