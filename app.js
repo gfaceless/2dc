@@ -61,7 +61,7 @@ app.configure(function () {
   app.use(locals);
 
   app.use(express.methodOverride());
-//  app.use(allowCrossDomain);
+  app.use(allowCrossDomain);
 
   // from SO:
   // Note that if you don't explicitly use the router,

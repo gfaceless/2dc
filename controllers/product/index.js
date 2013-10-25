@@ -64,7 +64,12 @@ exports.list = function list(req, res) {
   var category = req.query.category
     , mfr = req.query.mfr
     , name = req.query.name
-    , criteria = {};
+    , criteria = {}
+    , page = parseInt(req.query.page, 10) || 1
+    , itemsPerPage = 8
+    , skip = (page-1) * itemsPerPage;
+
+
 
   if (category) criteria.categories = category;
   if (mfr) criteria.mfr = mfr;
@@ -72,11 +77,28 @@ exports.list = function list(req, res) {
 
   Product.find(criteria)
     .populate('mfr categories')
-    .limit(100)
+    .skip(skip)
+    .limit(itemsPerPage)
     .exec(callback);
 
   function callback(err, docs) {
     if (err) throw err;
+
+    // only when multiple pages we do a count request:
+    if(docs.length === itemsPerPage || skip) {
+      Product.count(criteria, function (err, count) {
+
+        // how to solve such code redundancy?
+        if(err) throw err;
+        res.render('product/list', {
+          title: '该类全部产品',
+          products: docs,
+          pages: Math.ceil(count/itemsPerPage)
+        });
+      })
+      return;
+    }
+
     res.render('product/list', {
       title: '该类全部产品',
       products: docs

@@ -40,6 +40,6 @@ block content
             li
               span.label= i + ': '
               span.desc= item
-      if locals.isSelf
+      if locals.isSelf || locals.isAdmin
         div.control
           a(href='/products/' + product._id + '/edit') 编辑

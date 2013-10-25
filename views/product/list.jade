@@ -2,6 +2,7 @@ extends ../layout
 
 append js-bottom
   script(src="/javascripts/product/list.js")
+  script(src="/javascripts/pager.js")
 
 block content
   include ../category/list
@@ -37,3 +38,6 @@ block content
               li
                 span= i + ": "
                 span= item
+  unless typeof pages === 'undefined'
+    .pager.pager-centerd.hidden #{pages}
+

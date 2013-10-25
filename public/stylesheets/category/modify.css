@@ -39,7 +39,7 @@ form .delete {
     border: 0 none;
     width: 30px;
     overflow: hidden;
-    text-indent: 30px;
+    text-indent: -60px;
     opacity: 0.5;
 }
 /*

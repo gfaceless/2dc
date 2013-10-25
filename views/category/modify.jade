@@ -17,7 +17,7 @@ block content
           dt
             input.lvl1(type="radio",name="categ-selecter")
             input.lvl1(type="text",name=docLvl1._id,value=docLvl1.name)
-            button.delete(tabindex=-1)
+            button.delete(tabindex=-1) 删除
           if docLvl1.children
             dd
               each docLvl2 in docLvl1.children
@@ -25,12 +25,12 @@ block content
                   dt
                     input.lvl2(type="radio",name="categ-selecter")
                     input.lvl2(type="text",name=docLvl2._id,value=docLvl2.name)
-                    button.delete(tabindex=-1)
+                    button.delete(tabindex=-1) 删除
                   if docLvl2.children
                     each docLvl3 in docLvl2.children
                       dd
                         input.lvl3(type="text",name=docLvl3._id,value=docLvl3.name)
-                        button.delete(tabindex=-1)
+                        button.delete(tabindex=-1) 删除
 
 
     #form-control
