@@ -35,12 +35,20 @@ exports.upload = function (req, res) {
   // TODO: async this! IMPORTANT!
   sales = codes.map(function (rawCode) {
     return {
-      pid: pid,
+      product: pid,
       code: btoa( pid + rawCode)
     };
   })
   Sale.create(sales, function (err){
     if(err) throw err;
     res.send(200, {success: true, num: arguments.length - 1 });
+  })
+}
+
+exports.list = function (req, res, next){
+  var pid = req.query.pid;
+  Sale.find({product: pid}).exec(function(err, sales) {
+    if(err) return next(err);
+    res.render('sale/list', {title:'码源', sales: sales});
   })
 }

@@ -291,15 +291,22 @@ a.block {
 /*form*/
 fieldset {
     margin: 10px auto;
+    width: 800px;
 }
 
 form input{
     font-size: 100%;
 }
 
+form.main{
+    margin: 20px auto;
+    font-size: 150%;
+}
+
 form.main label {
+
     width: 150px;
-    margin: 0 10px;
+    margin: 0 25px;
     text-align: right;
     float: left;
     clear: left;
@@ -311,7 +318,7 @@ form.main input[type="submit"] {
 
 form.main>div {
     overflow: hidden;
-    margin: 10px 0;
+    margin: 25px 0;
 }
 
 form .hidden{
@@ -323,6 +330,24 @@ form .hidden{
 form.main label input {
     width: 4em;
 }
+
+/*form warning*/
+form .msg {
+    color: red;
+    font-size: 80%;
+    margin-left: 20px;
+    padding-left: 25px;
+}
+form .error{
+    background: url('/images/icon-sprites.png') -61px -3px no-repeat;
+}
+
+form .correct {
+    color: #555;
+    background: url('/images/icon-sprites.png') -61px -53px no-repeat;
+
+}
+
 
 
 /*message fadeOut*/
@@ -398,4 +423,12 @@ form.main label input {
 .pager li.current:hover a,
 .pager li.current a:focus {
     background: #2ba6cb;
+}
+
+/*misc*/
+
+li.box {
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    margin-bottom: 10px;
 }

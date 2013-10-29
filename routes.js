@@ -63,6 +63,7 @@ function startRoute(app) {
         })
         break;
       case 'products':
+      case 'sales':
         Product.findById(id, function (err, product) {
           if(err) return next(err);
           if(!product) return next(makeError(404));
@@ -118,6 +119,7 @@ function startRoute(app) {
 
   app.get('/users/list', requireAdmin, user.list);
   app.get('/users', requireAdmin, user.list);
+  app.del('/users/:_id', requireAdmin, user.destroy);
 
   app.all('/mfrs/register', requireNonMfr);
   app.get('/mfrs/register', mfr.add);
@@ -131,6 +133,7 @@ function startRoute(app) {
   app.post('/mfrs/:_id/edit', requireSelf, mfr.update);
 
 
+  app.get('/sales/list', sale.list)
   app.get('/sales/:code', sale.check)
   app.post('/sales', sale.upload)
 

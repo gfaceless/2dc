@@ -40,6 +40,8 @@ block content
             li
               span.label= i + ': '
               span.desc= item
-      if locals.isSelf || locals.isAdmin
+      if locals.isSelf || isAdmin
         div.control
           a(href='/products/' + product._id + '/edit') 编辑
+          a(href='/pl-emulator/index.html?pid=' + product._id + '&pname=' + product.name) 生产线模拟
+          a(href='/sales/list?pid=' + product._id) 查看该产品所有防伪码

@@ -29,6 +29,7 @@ var locals = function (req, res, next) {
     username: req.session.username,
     logged_in: req.session.logged_in,
     isAdmin: req.session.isAdmin,
+    expose: {},
     categories: require('./controllers/category.js').tree
   });
   next();

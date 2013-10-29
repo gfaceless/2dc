@@ -1,14 +1,28 @@
 extends ../layout
+
+append js
+  script.
+    !{stringify(expose, 'data', expose.env)}
+
+append js-bottom
+  script(src="/javascripts/validator.js")
+
+
+
 block content
   fieldset
     form.main(method="POST")
       div
-        label(for="name") 用户名:
+        label(for="name") 会员名:
         input#name(type="text", name="user[name]")
+        span.msg
       div
-        label(for="password") 密码:
+        label(for="password") 登录密码:
         input#password(type="password", name="user[password]")
+        span.msg
       div
-        label(for="re-password") 再次输入密码:
+        label(for="re-password") 确认密码:
         input#re-password(type="password")
-      input(type="submit", value="创建新账户")
+        span.msg
+      input(type="submit", value="注册")
+      span.msg

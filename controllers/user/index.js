@@ -1,7 +1,8 @@
 var mongoose = require('mongoose')
   , crypto = require('crypto');
 
-var User = mongoose.model('User');
+var User = mongoose.model('User')
+
 
 
 function setSession(req, user) {
@@ -13,10 +14,15 @@ function setSession(req, user) {
 
 
 function add(req, res) {
-  res.render('user/register', {title: '用户注册'});
+  // TODO: go up hierarchy
+  res.locals.stringify = require('../../libs/stringify.js');
+  res.locals.expose = User.expose();
+  res.render('user/register', {
+    title: '用户注册'
+  });
 }
 
-function create(req, res) {
+function create(req, res, next) {
 
   var user = req.body.user || {}
     , password = user.password;
@@ -31,7 +37,7 @@ function create(req, res) {
   user = new User(user);
 
   user.save(function (err, user) {
-    if (err) throw err;
+    if (err) return next(err);
     setSession(req, user);
     req.flash('info', '注册成功，已直接登录');
     res.redirect('/');
@@ -80,11 +86,13 @@ function logout(req, res) {
   res.redirect('/');
 }
 
-exports.destroy = function (req, res) {
+exports.destroy = function (req, res, next) {
   var id = req.params['_id'];
   User.remove({_id: id} , function (err, user) {
-    if(err) throw err;
-
+    if(err) return next(err);
+    console.log(user);
+    req.flash('info', 'deleted!');
+    res.redirect('back');
   })
 
 }

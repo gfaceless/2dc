@@ -7,18 +7,27 @@ var mongoose = require('mongoose')
   , ObjectId = Schema.Types.ObjectId
   , util = require('util');
 
+var uniqueValidator = require('mongoose-unique-validator');
+
+var getParamNames = require('./getParamNames.js');
+
 mongoose.connect('mongodb://localhost/2dc');
 
 // consider using regex
 function generateLengthValidator(start, end) {
+  var args = arguments;
   var arr = [function (str) {
     // if end is not defined, then end-test is passed.
     var endTested = end ? str.length <= end : true;
     var startTested = str.length >= start;
     return  startTested && endTested;
   }, '字符串长度应该在' + start + '到' + (end || '无限制') + '之间'
-
   /* util.format('字符串长度应该在%s到%s之间', start, end || '无限制')*/];
+
+  var env = arr.__proto__.env = {}
+  getParamNames(generateLengthValidator).forEach(function (name, i){
+    env[name] = args[i];
+  })
   return arr;
 
 }
@@ -78,13 +87,27 @@ var opts = {
 var userSchema = new Schema({
   name: {
     type: String, trim: true, lowercase: true, validate: lengthValidator,
-    index: {unique: true}
+    unique: true,
+//    index: {unique: true}
   },
   password: {type: String, required: true},
   // TODO: maybe one user can have multiple mfrs
   mfr: {type: ObjectId, ref: 'Mfr'},
   isAdmin: Boolean
 });
+userSchema.plugin(uniqueValidator, { mongoose: mongoose });
+userSchema.statics.expose = function () {
+  var obj = {
+    "name": lengthValidator,
+    "password": 'someth'
+  };
+
+  return obj;
+}
+
+
+
+
 var mfrSchema = new Schema({
   shortName: opts,
   fullName: {type: String, validate: longLengthValidator},
@@ -96,7 +119,7 @@ var saleSchema = new Schema ({
   code: {
     type: String, index: {unique: true}
   },
-  pid: {type: ObjectId, ref: 'Product'},
+  product: {type: ObjectId, ref: 'Product'},
   queriedCount: {type: Number, default: 0},
   queriedDate: {type: Date}
 })

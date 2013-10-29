@@ -38,7 +38,7 @@
     #info {
       padding: 10px;
       margin: auto;
-      width: 200px;
+      width: 600px;
       border: 2px solid black;
       /*white-space: pre-wrap;*/
     }
@@ -57,6 +57,8 @@
 </head>
 
 <body>
+<h1>生产线上防伪码喷绘及上传模拟</h1>
+
 <div id="main">
   <div id="container">
   </div>
@@ -64,13 +66,15 @@
 </div>
 
 <div id="info">
+  <p>产品名：<span id="pname"></span></p>
+  <p>产品id: <span id="pid"></span></p>
   <p>正在喷绘第<span id="paintingCount">0</span>个二维码</p>
 
   <p>喷绘成功的二维码信息将集中上传</p>
 
   <p>已上传 <span id="uploadedCount">0</span> 个</p>
 </div>
-<button id="stop">run</button>
+<button id="stop">开始</button>
 
 
 <script type="text/javascript">
@@ -79,7 +83,8 @@
 var canvas = document.getElementById('2dc'),
   urlUpload = location.protocol + '//' + location.host + '/sales',
   preUrlCheck = location.protocol+ '//'+ location.host + '/sales',
-  pid = '5194689eb249ee541100000e',
+  pid = getParameterByName('pid'),
+  pname = getParameterByName('pname'),
   i, len,
   qr = new JSQR(),
   env = {
@@ -92,8 +97,18 @@ var canvas = document.getElementById('2dc'),
   , data = generateData()
   , urls = generate2dc(preUrlCheck, pid, data);
 
+$('#pname').text(pname);
+$('#pid').text(pid);
+
+function getParameterByName(name) {
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+  return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
 function generateData(n) {
+  var total = 100;
 
   function randHex(n) {
     var arr = [], i;
@@ -112,7 +127,7 @@ function generateData(n) {
     , count = 0
     , arr = [];
 
-  n = n || 100;
+  n = n || total;
 
   for (var i = 0; i < n; i++) {
     arr.push(uid());
@@ -210,7 +225,7 @@ var button = $('#stop')
   , displayNum = $('#paintingCount')
   , n = 1
   , uploadedCount = 0
-  , nUploadInterval = 10
+  , nUploadInterval = 5
   , timePaint = 2000
   , timeFlow = 1000
   , uploadedCountDisplay$ = $('#uploadedCount')
@@ -270,11 +285,11 @@ button.click(function (e) {
   if (!animating) {
     animate();
     button.data('animating', true);
-    button.html('stop');
+    button.html('停止');
   } else {
     animate.stop();
     button.data('animating', false);
-    button.html('resume');
+    button.html('继续');
   }
 });
 
