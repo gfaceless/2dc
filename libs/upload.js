@@ -2,7 +2,6 @@ var path = require('path')
   , fs = require('fs');
 
 function upload(image, subFolder, fn) {
-  console.log('here3');
   var basename = path.basename(image.path);
   //TODO: consider changing basename to pid(excluding the random part)
   var newPath = path.resolve(__dirname,
@@ -40,11 +39,12 @@ upload.uploadImage = function (opts, fn) {
 
   if (~image.type.indexOf('image/') && image.size) {
     upload(image, subFolder, function (err, basename) {
+      // if no err, err is null, not undefined
+
       // TODO: should check doc.images first
       // TODO: if image changes, delete the original one
       doc.images = [];
       doc.images[0] = basename;
-      console.log('error is null or undefined?: ', err)
       fn(err, doc);
     });
   } else {

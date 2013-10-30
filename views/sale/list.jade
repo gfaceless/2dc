@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-  h3 产品名称:
+  h3 产品名称: #{ product ? product.name : '无'}
   unless sales.length
     div 无结果
   ul

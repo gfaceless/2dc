@@ -6,7 +6,7 @@ var crypto = require('crypto')
   , ObjectId = mongoose.Schema.Types.ObjectId
   , uploadImage = require('../../libs/upload.js').uploadImage
 
-
+var makeError = require('../error.js').makeError;
 var Product = mongoose.model('Product');
 
 exports.add = function add(req, res) {
@@ -42,20 +42,37 @@ exports.create = function (req, res, next) {
 
 exports.show = function (req, res, next) {
   var id = req.params['_id'];
+
+  if(req.queriedEl) {
+    return render(req.queriedEl);
+  }
+
+  console.log('if reached here, the ObjectId regex test must have failed, and we are' +
+    'not at route /products/register or route /products/list');
+  return next(404);
+
+  // code remains for historical reasons:
   if (id) {
     Product.findById(id).lean().exec(function (err, product) {
+
+      console.log('actually never reach here..');
       if (err) throw err;
       if (!product) return next(404);
+      //if (!product) return next(makeError(404));
 
       // populate product.mfr
       Product.populate(product, {path: 'mfr categories'}, function (err, product) {
         if (err) throw err;
-        res.render('product/show', {
-          title: '产品详细信息',
-          product: product
-        })
+        render(product);
       });
 
+    })
+  }
+
+  function render (queriedEl){
+    res.render('product/show', {
+      title: '产品详细信息',
+      product: queriedEl
     })
   }
 }
@@ -105,25 +122,34 @@ exports.list = function list(req, res) {
     })
   }
 }
-exports.edit = function edit(req, res) {
+exports.edit = function edit(req, res, next) {
   var id = req.params['_id'];
-  // should restrict mfr, or else one can insert arbitrary product into other's account
-  Product.findById(id).populate('categories').exec(function (err, product) {
-    if (err) throw err;
-    if (!product)  throw 404;
+
+  if(req.queriedEl) {
+    return render(req.queriedEl);
+  }
+
+  function render (product) {
     res.render('product/edit', {
       title: '编辑',
       product: product,
       categExpanded: true
     })
+  }
 
+  // never reach here:
+  Product.findById(id).populate('categories').exec(function (err, product) {
+    if (err) throw err;
+    if (!product)  throw 404;
+    render (product);
   })
 }
-exports.update = function update(req, res) {
+exports.update = function update(req, res, next) {
 
   function doUpdate(err, product) {
-    if (err) throw err;
+    if (err) return next(err);
     Product.doUpdate(product, function (err, doc) {
+      if (err) return next(err);
       req.flash('info', '编辑成功！');
       res.redirect('/products/' + id);
 
@@ -150,6 +176,52 @@ exports.destroy = function destory(req, res, next) {
     res.redirect('/products?mfr=' + doc.mfr);
   })
 }
+
+exports.prep = function (req, res, next) {
+  var id = req.params['_id']
+    , mid
+    , pop;
+
+//  if(!id) return next('route');
+
+  mid = req.session.mid;
+  // when edit, restrict mfr, or one can insert arbitrary product into others' account
+  pop = 'mfr categories';
+
+  Product.findById(id).populate(pop).exec( function (err, product) {
+    if(err) return next(err);
+    if(!product) return next(404);
+    req.queriedEl = product;
+    if(mid && product.mfr._id.toString() === mid){
+      res.locals.isSelf = true;
+    }
+    next();
+  })
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function mixin(a, b, inc, ex) {
   inc = inc || [];
@@ -362,7 +434,7 @@ var findByMid = function (mid, fn) {
     });
 };
 // no route:
-exports.hasPid = function (mid, pid, fn) {
+var hasPid = function (mid, pid, fn) {
   findByMid(mid, function (err, arr) {
     if (err) throw err;
     fn(~arr.indexOf(pid));

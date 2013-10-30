@@ -11,7 +11,6 @@ require('./libs/mongoose');
 var app = express();
 
 
-// I am doubting that the redundant history thing results from this:
 var allowCrossDomain = function (req, res, next) {
 //    res.header('Access-Control-Allow-Origin', config.allowedDomains);
 //    res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -97,14 +96,17 @@ app.get('/yui3', combo.combine({rootPath: __dirname + '/public/yui'}), function 
 //app.use('/sub', require('../express/node_modules/express/examples/mvc'));
 
 //if no url match, here it is:
+
 app.use(error.e404);
-app.use(error);
+//app.use(error);
 
 
 app.configure('development', function () {
   app.use(express.errorHandler());
 });
-
+app.configure('production', function () {
+  app.use(error.e500);
+});
 
 
 dbConnector.open(function (err) {

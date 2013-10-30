@@ -7,7 +7,7 @@ var mongoose = require('mongoose')
   , ObjectId = Schema.Types.ObjectId
   , util = require('util');
 
-var uniqueValidator = require('mongoose-unique-validator');
+//var uniqueValidator = require('mongoose-unique-validator');
 
 var getParamNames = require('./getParamNames.js');
 
@@ -95,7 +95,7 @@ var userSchema = new Schema({
   mfr: {type: ObjectId, ref: 'Mfr'},
   isAdmin: Boolean
 });
-userSchema.plugin(uniqueValidator, { mongoose: mongoose });
+//userSchema.plugin(uniqueValidator, { mongoose: mongoose });
 userSchema.statics.expose = function () {
   var obj = {
     "name": lengthValidator,
@@ -113,6 +113,7 @@ var mfrSchema = new Schema({
   fullName: {type: String, validate: longLengthValidator},
   desc: String,
   images: [String]
+
 });
 
 var saleSchema = new Schema ({
@@ -121,7 +122,8 @@ var saleSchema = new Schema ({
   },
   product: {type: ObjectId, ref: 'Product'},
   queriedCount: {type: Number, default: 0},
-  queriedDate: {type: Date}
+  queriedDate: {type: Date},
+  ips: [{type:String}]
 })
 
 
@@ -142,8 +144,10 @@ function mixin(a, b, inc, ex) {
 productSchema.statics.doUpdate = function (update, fn) {
   var model = this;
   model.findById(update._id, function (err, doc) {
-    if(err) throw err;
-    mixin(doc, update, Object.keys(model.schema.paths));
+    if(err) return fn(err);
+    // object `doc` is a wrapper obj, malicious `update` can be dangerous
+    // now mfr is not allowed to be changed
+    mixin(doc, update, Object.keys(model.schema.paths), ['mfr']);
     // err & doc is pass to callback:
     doc.save(fn);
   })

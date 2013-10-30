@@ -29,8 +29,8 @@ function create(req, res, next) {
 
   // TODO: use schema#pre and USE ASYNC
   user.password = password && crypto.createHash('sha1')
-   .update(password, 'utf8')
-   .digest('base64');
+    .update(password, 'utf8')
+    .digest('base64');
 
   delete user.isAdmin;
 
@@ -83,6 +83,8 @@ function login(req, res) {
 function logout(req, res) {
   // don't forget to consider CSRF
   req.session.logged_in = false;
+  req.session.isAdmin = false;
+  req.session.mid = '';
   res.redirect('/');
 }
 
@@ -106,9 +108,27 @@ exports.loginGet = loginGet;
 
 exports.logout = logout;
 
-exports.list = function (req, res){
+exports.list = function (req, res, next){
   User.find().populate('mfr').exec(function(err, users) {
-    if(err) throw err;
+    if(err) return next(err);
     res.render('user/list', {title:'用户列表', users: users});
   })
 }
+
+exports.prep = function (req, res, next) {
+  var id = req.params['_id'];
+
+//  if(!id) return next();
+
+  User.findById(id, function (err, user) {
+    if(err) return next(err);
+    if(!user) return next(404);
+
+    req.queriedEl = user;
+
+    if(user.name === req.session.username) {
+      res.locals.isSelf = true;
+    }
+    next();
+  })
+};

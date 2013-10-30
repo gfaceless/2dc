@@ -31,13 +31,7 @@ block content
           li.mfr 由
             a(href="/mfrs/#{product.mfr._id}")= product.mfr.shortName
             | 销售制造
-          //-li.desc
-          //-  span= product.desc
-          if typeof product.extra === 'object'
-            each item, i in product.extra
-              li
-                span= i + ": "
-                span= item
+
   unless typeof pages === 'undefined'
     .pager.pager-centerd.hidden #{pages}
 

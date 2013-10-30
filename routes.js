@@ -1,18 +1,10 @@
-/**
- * Created with JetBrains WebStorm.
- * User: giggle
- * Date: 13-3-27
- * Time: 下午8:24
- * To change this template use File | Settings | File Templates.
- */
-
 var user = require('./controllers/user')
   , main = require('./controllers/home')
   , product = require('./controllers/product')
   , mfr = require('./controllers/manufacturer')
   , category = require('./controllers/category')
   , sale = require('./controllers/sale.js')
-  , makeError = require('./controllers/error.js').makeError;
+//  , makeError = require('./controllers/error.js').makeError;
 
 var permission = require('./controllers/permission')
   , requireLogin = permission.login
@@ -29,76 +21,27 @@ var mongoose = require('mongoose')
 
 function startRoute(app) {
 
-  // the following app.all prepare permission part (req.isSelf)
-  // tell me about the performance
-
-  // it needs at least 2 params to go into this logic:
-  // this logic is not intuitive, maybe change it:
-  // TODO: findById would be ran 2 times, use req.elem to pass the result.
-  app.all('/:name/:_id/:op?', function (req, res, next) {
-    var mid = req.session.mid
-      , id = req.params._id
-      , name = req.params.name
-      , op = req.params.op
-      , candidates = ['mfrs', 'products', 'users']
-      , ex = ['login', 'register', 'logout', 'list'];
-
-    if(!~candidates.indexOf(name) || ~ex.indexOf(id)) return next('route');
-
-    // if no operation(not editing, not deleting), no permission check.
-    // is toLowerCase necessary?
-    // if(!op && req.route.method.toLowerCase() !== 'delete') return next('route');
-
-    // TODO: make these methods in respective files or add as schema method:
-    switch (name) {
-      case 'mfrs':
-        Mfr.findById(id, function (err, mfr) {
-          if(err) return next(err);
-          if(!mfr) return next(makeError(404));
-          if(mid && mfr._id.toString() === mid) {
-            req.isSelf = true;
-            res.locals.isSelf = true;
-          }
-          next();
-        })
-        break;
-      case 'products':
-      case 'sales':
-        Product.findById(id, function (err, product) {
-          if(err) return next(err);
-          if(!product) return next(makeError(404));
-
-
-          if(mid && product.mfr.toString() === mid){
-            req.isSelf = true;
-            res.locals.isSelf = true;
-          }
-          next();
-        })
-        break;
-      case 'users':
-        User.findById(id, function (err, user) {
-          if(err) return next(err);
-          if(!user) return next(makeError(404));
-          if(user.name === req.session.username) {
-            req.isSelf = true;
-            res.locals.isSelf = true;
-          }
-          next();
-        })
-        break;
-    }
-
-  });
-
-
-
+  // TODO: use app.param?
 
   app.get('/', main.index);
+
+  function checkId (req, res, next){
+    var id = req.params['_id'];
+    if(!id || !id.match(/^[0-9a-fA-F]{24}$/)) return next('route');
+    next();
+  }
+
+  // preparations
+  app.all('/users/:_id?/:op?', checkId, user.prep);
+  app.all('/mfrs/:_id?/:op?', checkId, mfr.prep);
+  app.all('/products/:_id?/:op?', checkId, product.prep);
+  app.get('/sales', sale.prep);
+
 
   app.get('/products/register', requireMfr, product.add);
   app.post('/products/register', requireMfr, product.create);
 
+  // order matters
   app.get('/products/list', product.list);
   app.get('/products', product.list);
   app.get('/products/:_id', product.show);
@@ -133,7 +76,7 @@ function startRoute(app) {
   app.post('/mfrs/:_id/edit', requireSelf, mfr.update);
 
 
-  app.get('/sales/list', sale.list)
+  app.get('/sales', requireSelf, sale.list)
   app.get('/sales/:code', sale.check)
   app.post('/sales', sale.upload)
 
@@ -141,7 +84,6 @@ function startRoute(app) {
   app.get('/manage/categories', category.modify);
   app.post('/manage/categories/refresh', category.refresh);
   app.get('/manage/category/test', category.populate2);
-
 
   var route = function (app, controllers) {
 

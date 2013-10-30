@@ -3,7 +3,7 @@ Y = YUI({
   comboBase: '/yui3?',
   root:'3.11.0/build/'
 }).use('node', 'event-outside', function (Y) {
-    var form = Y.one('form')
+    var form = Y.one('form.main')
       , submit = form.one('input[type="submit"]')
       , fileBtn = Y.one('#upload')
       , categBtn = Y.one('#categ-btn')
