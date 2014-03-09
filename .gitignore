@@ -218,5 +218,5 @@ pip-log.txt
 # add by gfaceless
 .idea/
 
-node_module/
+node_modules/**/*
 public/js/vendor/
