@@ -1,9 +1,25 @@
 var mongoose = require('mongoose')
   , crypto = require('crypto');
 
-var User = mongoose.model('User')
+var User = mongoose.model('User');
 
-
+var validationOpt = JSON.stringify({
+  ignore: [],
+  rules : {
+    "user[name]": {
+      required: true,
+      "rangelength": [2,12],
+      remote: "userexists"
+    },
+    "user[password]": {
+      required: true,
+      "rangelength": [6,20]
+    }
+    // TODO: re-password is done on the client side, should do it here
+  },
+  messages: {
+  }
+});
 
 function setSession(req, user) {
   req.session.logged_in = true;
@@ -14,10 +30,11 @@ function setSession(req, user) {
 
 
 function add(req, res) {
-  // TODO: go up hierarchy
+  /*// TODO: go up hierarchy
   res.locals.stringify = require('../../libs/stringify.js');
-  res.locals.expose = User.expose();
+  res.locals.expose = User.expose();*/
   res.render('user/register', {
+    validationOpt: validationOpt,
     title: '用户注册'
   });
 }
@@ -61,17 +78,16 @@ function login(req, res) {
   // if there is an error, is the error caught and passed to the errHandler?
   var user = req.body.user || {}
     , password = user.password
-    , name = user.name && user.name.toLowerCase()
+    , name = user.name/* && user.name.toLowerCase()*/
     , referrer = req.body.referrer;
 
   User.findOne({name: name}, function (err, user) {
-    if (err) throw err;
+    if (err) return next(err);
     password = password && crypto.createHash('sha1').update(password, 'utf8').digest('base64')
     if (user && user.password === password) {
       setSession(req, user);
 
       req.flash('info', '欢迎您, ' + user.name);
-      console.log(referrer);
       res.redirect(referrer || '/');
     } else {
       req.flash('info', '用户名/密码错误');
@@ -132,3 +148,37 @@ exports.prep = function (req, res, next) {
     next();
   })
 };
+
+exports.checkUser = function (req, res, next) {
+  var name = req.query.user && req.query.user.name;
+  if(name) {
+    User.findOne({name: name}, function (err, user) {
+      if(err) return next(err);
+
+      // per http://jqueryvalidation.org/remote-method/
+      //The response is evaluated as JSON and must be true for valid elements,
+      // and can be any false, undefined or null for invalid elements, using the default message;
+      // or a string, eg. "That name is already taken, try peter123 instead" to display as the error message.
+
+      // per http://expressjs.com/api.html#res.send
+      // When a String is given the Content-Type is set defaulted to "text/html":
+      res.send( JSON.stringify(  user ? "该用户名已被注册" : true));
+
+
+
+    });
+
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,6 @@
+/* - S L I D E S - */
 
-#main-slides {
+#main-slideshow {
     position: absolute;
     margin: 0 auto;
     left: 0;
@@ -12,37 +13,36 @@
     /*box-shadow: 0 0 3px hsla(250, 40%, 30%, 0.8);*/
 }
 
-/* - S L I D E S - */
 
-#main-slides .slides {
+#main-slideshow .slides {
     margin: 0;
     padding: 0;
 
 }
 
-#main-slides .slides li {
+#main-slideshow .slides li {
     position: absolute;
     left: 0;
     top: 0;
     list-style: none;
     display: inline;
     opacity: 0;
-    filter: alpha(opacity=0);
+    /*filter: alpha(opacity=0);
     -webkit-transition: opacity 0.5s ease-out;
     -moz-transition: opacity .5s ease-out;
     -o-transition: opacity .5s ease-out;
-    transition: opacity .5s ease-out;
+    transition: opacity .5s ease-out;*/
 }
 
-#main-slides .slides .active {
+#main-slideshow .slides .active {
     opacity: 1;
-    filter: alpha(opacity=100);
+    /*filter: alpha(opacity=100);*/
 
 }
 
 /* - C O N T R O L S - */
 
-#main-slides .controls {
+#main-slideshow .controls {
 
     position: absolute;
     bottom: 20px;
@@ -50,13 +50,13 @@
     z-index: 1;
 }
 
-#main-slides .controls li {
+#main-slideshow .controls li {
     float: left;
     list-style: none;
     margin-right: 10px;
 }
 
-#main-slides .controls a {
+#main-slideshow .controls a {
     display: block;
     width: 22px;
     height: 22px;
@@ -96,19 +96,19 @@
     padding: 0;
 }
 }*/
-#main-slides .controls a:hover {
+#main-slideshow .controls a:hover {
     background-color: #f70;
 }
 
-#main-slides .controls .active a,
-#main-slides .controls .active a:hover {
+#main-slideshow .controls .active a,
+#main-slideshow .controls .active a:hover {
     background: #f70;
     color: #ffffff;
 }
 
 /* - P A U S E   M E S S A G E - */
 
-#main-slides .paused {
+#main-slideshow .paused {
     opacity: 0;
     filter: alpha(opacity=0);
     bottom: 5px;
@@ -124,7 +124,7 @@
     transition: all .5s ease-out;
 }
 
-#main-slides:hover .paused {
+#main-slideshow:hover .paused {
     opacity: 1;
     filter: alpha(opacity=100);
     left: 30px;

@@ -1,5 +1,5 @@
 //in the future, I would change the menu hierarchy, for better SEO or so.
-urlRoot = '/products?category='
+-var urlRoot = '/products?category='
 mixin iterate(el, level)
   if el.children
     each child in el.children
@@ -11,13 +11,14 @@ mixin iterate(el, level)
     //- 这里的if else要怎么写才能节省？
     if locals.categExpanded
       dl.categories.expanded
-        each lvl1 in categories.children
-          dt.lvl1: a(href=urlRoot + lvl1._id)= lvl1.name
-          if lvl1.children
-            dd
-              each lvl2,i in lvl1.children
-                dl: dt.lvl2: a(href=urlRoot + lvl2._id)= lvl2.name
-                  mixin iterate(lvl2, 3)
+        if categories.children
+            each lvl1 in categories.children
+              dt.lvl1: a(href=urlRoot + lvl1._id)= lvl1.name
+              if lvl1.children
+                dd
+                  each lvl2,i in lvl1.children
+                    dl: dt.lvl2: a(href=urlRoot + lvl2._id)= lvl2.name
+                      mixin iterate(lvl2, 3)
     else
       dl.categories
         if categories.children

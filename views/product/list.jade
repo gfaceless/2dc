@@ -1,29 +1,28 @@
 extends ../layout
 
 append js-bottom
-  script(src="/javascripts/product/list.js")
-  script(src="/javascripts/pager.js")
+  script(src="/js/common.js")
+  //- script(src="/javascripts/pager.js")
 
 block content
   include ../category/list
-  #list
+  div#list
     unless products.length
-      #no-result 无结果
+      div#no-result 无结果
     each product in products
-      url = '/products/' + product._id;
-      .item
-        #imageContainer
+      -var url = '/products/' + product._id;
+      div.item
+        div#imageContainer
           a(href= url, title= product.name)
-            if Array.isArray(product.images) && product.images[0]
-              img(src= '/images/products/' + product.images[0])
+            if product.thumbnail
+              img(src= '/' + product.thumbnail)
             else
-              img(src='/images/no-image.png')
-
+              img(src='/img/no-image.png')
         h3#name
           a(href= url)= product.name
         ul.info
           li.categ
-            categ = product.categories[0]
+            -var categ = product.categories[0]
             if categ
               a(href="/products?category=#{categ._id}")= categ.name
             else
@@ -34,4 +33,3 @@ block content
 
   unless typeof pages === 'undefined'
     .pager.pager-centerd.hidden #{pages}
-

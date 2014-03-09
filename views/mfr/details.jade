@@ -1,13 +1,13 @@
 extends ../layout
 
 block content
-  m = mfr
-  image = m.images && m.images[0]
-  #details
+  -var m = mfr
+  -var image = m.images && m.images[0]
+  div#details
     if image
-      img.image(src= '/images/mfrs/' + image)
+      img.image(src= '/' + image)
     else
-      img.image(src= '/images/no-image.png')
+      img.image(src= '/img/no-image.png')
     ul
       li
         span.label 全称:
@@ -24,7 +24,7 @@ block content
       li
         span.label 成立时间:
         span= m.date
-    if locals.isSelf
+    if isSelf
       a(href='/mfrs/' + m._id + '/edit') 编辑
     else
       a(href='/products/list?mfr=' + m._id)= m.shortName + '的全部产品'

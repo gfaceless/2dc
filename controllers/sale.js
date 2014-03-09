@@ -73,7 +73,8 @@ exports.prep = function (req, res, next) {
     if(!product) return next(404);
 
     if(mid && product.mfr.toString() === mid){
-      res.locals.isSelf = true;
+      req.user = req.user || {};
+      req.user.isSelf = res.locals.isSelf = true;
     }
     req.queriedEl = product;
 

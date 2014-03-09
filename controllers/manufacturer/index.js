@@ -1,8 +1,24 @@
 var mongoose = require('mongoose')
   , Mfr = mongoose.model('Mfr')
   , User = mongoose.model('User')
-  , uploadImage = require('../../libs/upload.js').uploadImage
+  , publishImg = require('../../lib/image.js').publishImg
   , error = require('../error.js');
+
+var validationOpt = JSON.stringify({
+  ignore: [],
+  rules : {
+    "mfr[shortName]": {
+      required: true,
+      "rangelength": [2,12]
+    },
+    "mfr[longName]": {
+      required: true,
+      "rangelength": [2,30]
+    }
+  },
+  messages: {
+  }
+});
 
 
 exports.add = function add(req, res) {
@@ -10,7 +26,10 @@ exports.add = function add(req, res) {
   var mid = req.session.mid;
 
   if (!mid) {
-    res.render('mfr/register', {title: '生产厂商注册'});
+    res.render('mfr/register', {
+      title: '生产厂商注册',
+      validationOpt: validationOpt
+    });
 
   } else {
     res.redirect('back');
@@ -19,9 +38,20 @@ exports.add = function add(req, res) {
 
 exports.create = function create(req, res, next) {
 
-  function doCreate (err, mfr) {
-    if(err) return next(err);
+  var mfr = req.body.mfr || {}
+    , img = req.files && req.files.image;
 
+  if(!img) doCreate();
+  else  publishImg(img, 'mfr', doCreate);
+
+
+  // TODO: definitely use async here:
+  function doCreate (err, img) {
+    if(err) return next(err);
+    if(img) {
+      mfr.images = [img.imgUrl];
+      mfr.thumbnail = img.thumbUrl;
+    }
     Mfr.create(mfr, function (err, mfr) {
       if (err) return next(err);
       User.findOne({name: req.session.username}, function (err, user) {
@@ -37,12 +67,6 @@ exports.create = function create(req, res, next) {
       })
     })
   }
-
-  var mfr = req.body.mfr || {}
-    , image = req.files.mfr.image;
-
-  uploadImage({image: image, doc: mfr, path: 'mfrs'}, doCreate);
-
 }
 
 exports.list = function list(req, res) {
@@ -84,16 +108,16 @@ exports.edit = function edit(req, res) {
   }
 
   function render(mfr){
-    res.render('mfr/edit', {
+    res.render('mfr/register', {
       title: '编辑生产商资料',
-      mfr: mfr
-
+      mfr: mfr,
+      validationOpt: validationOpt
     });
   }
 
   // never reach here:
   Mfr.findById(mid, function (err, mfr) {
-    if (err) throw err;
+    if (err) return next(err);
     render(mfr);
   });
 }
@@ -101,24 +125,30 @@ exports.edit = function edit(req, res) {
 exports.update = function update(req, res, next) {
   // TODO: add admin support
 
-  function doUpdate(err, mfr) {
-    if(err) throw err;
-    Mfr.doUpdate(mfr, function (err, doc) {
-      if(err) return next(err);
-
-      req.flash('info', '编辑成功！');
-      res.redirect('/mfrs/' + id);
-
-    });
-  }
 
   var id = req.params['_id']
     , mfr = req.body.mfr || {}
-    , image = req.files.image;
+    , img = req.files && req.files.image;
 
   // also prevent malicious overriding:
   mfr._id = id;
-  uploadImage({image: image, doc: mfr, path: 'mfrs'}, doUpdate);
+
+  if(!img) doUpdate();
+  else  publishImg(img, 'mfr', doUpdate);
+
+
+  function doUpdate(err, img) {
+    if(err) return next(err);
+    if(img) {
+      mfr.images = [img.imgUrl];
+      mfr.thumbnail = img.thumbUrl;
+    }
+    Mfr.doUpdate(mfr, function (err, doc) {
+      if(err) return next(err);
+      req.flash('info', '编辑成功！');
+      res.redirect('/mfrs/' + id);
+    });
+  }
 
 }
 
@@ -137,12 +167,9 @@ exports.prep = function (req, res, next) {
     req.queriedEl = mfr;
 
     if(mid && mfr._id.toString() === mid) {
-      res.locals.isSelf = true;
+      req.user = req.user || {};
+      req.user.isSelf = res.locals.isSelf = true;
     }
     next();
   });
 };
-
-
-
-

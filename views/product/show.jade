@@ -3,14 +3,15 @@ extends ../layout
 append css
   link(rel='stylesheet', href='/stylesheets/product/show.css')
 block content
-  #details
+  div#details
     if !product
-      '无该产品或该产品已注销'
+      | '无该产品或该产品已注销'
     else
       if Array.isArray(product.images) && product.images[0]
-        img(src= '/images/products/' + product.images[0])
+        //-  `/` should be this app's mount point, should've got it via locals.settings
+        img(src= '/' + product.images[0])
       else
-        img(src='/images/no-image.png')
+        img(src='/img/no-image.png')
       ul
         li
           span.label 产品名称:
@@ -24,9 +25,9 @@ block content
         li
           span.label 种类:
           //if Array.isArray(product.categories)
-          categ = product.categories[0]
-          if typeof categ === 'object'
-            a(href= '/products?category=' + categ._id)= categ.name
+          -var cat = product.categories[0]
+          if typeof cat === 'object'
+            a(href= '/products?category=' + cat._id)= cat.name
           else
             span 未分类
         li
@@ -40,8 +41,12 @@ block content
             li
               span.label= i + ': '
               span.desc= item
-      if locals.isSelf || isAdmin
+      if isSelf || isAdmin
         div.control
           a(href='/products/' + product._id + '/edit') 编辑
           a(href='/pl-emulator/index.html?pid=' + product._id + '&pname=' + product.name) 生产线模拟
           a(href='/sales?pid=' + product._id) 查看该产品所有防伪码
+          //- TODO: add CSRF support
+          form.delete(method="POST", action="/products/#{product._id}")
+            input(type="hidden", name="_method", value="delete")
+            input(type="submit", value="删除")

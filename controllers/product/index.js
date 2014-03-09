@@ -1,18 +1,40 @@
-// TODO: this file is too large. maybe split it into some small chunks in the same folder
 var crypto = require('crypto')
   , fs = require('fs')
   , path = require('path')
   , mongoose = require('mongoose')
   , ObjectId = mongoose.Schema.Types.ObjectId
-  , uploadImage = require('../../libs/upload.js').uploadImage
+  , publishImg = require('../../lib/image.js').publishImg
+  , removeImg = require('../../lib/image.js').removeImg
 
 var makeError = require('../error.js').makeError;
 var Product = mongoose.model('Product');
+
+var requireSelf;
+
+
+
+var validationOptions = JSON.stringify({
+  ignore: [],
+  rules : {
+    "product[name]": {
+      required: true,
+      "rangelength": [2,12]
+    },
+    "product[categories][0]": "required"
+  },
+  messages: {
+    // "product[name]": {}
+    "product[categories][0]": {
+      required: "必须选择种类"
+    }
+  }
+});
 
 exports.add = function add(req, res) {
   var mid = req.session.mid
 
   if (mid) {res.render('product/add', {
+    validationOpt: validationOptions,
     title: '添加/注册产品',
     categExpanded: true
   });}
@@ -21,19 +43,22 @@ exports.add = function add(req, res) {
 
 exports.create = function (req, res, next) {
   var product = req.body.product || {}
-    , image = req.files.image;
+    , img = req.files && req.files.image;
 
   product.mfr = req.session.mid;
 
-  uploadImage({image: image, doc: product, path: 'products'}, create);
+  if(!img) create();
+  else publishImg(img, 'product', create);
 
-  function create(err, product) {
+  function create(err, img) {
     if (err) return next(err);
+    if(img) {
+      product.images = [img.imgUrl];
+      product.thumbnail = img.thumbUrl;
+    }
     // such API leaves the possibilities for multiple creation
     Product.create(product, function (err, product) {
-      // I think the error handling should be like this:
       if(err)  return next(err);
-
       req.flash('info', '上传产品成功！');
       res.redirect('/products/' + product._id);
     });
@@ -47,37 +72,32 @@ exports.show = function (req, res, next) {
     return render(req.queriedEl);
   }
 
-  console.log('if reached here, the ObjectId regex test must have failed, and we are' +
-    'not at route /products/register or route /products/list');
-  return next(404);
-
-  // code remains for historical reasons:
+  // TODO: Product.findById(id).populate(pop).exec( function (err, product)
   if (id) {
     Product.findById(id).lean().exec(function (err, product) {
 
-      console.log('actually never reach here..');
-      if (err) throw err;
+      if (err) return next(err);
       if (!product) return next(404);
-      //if (!product) return next(makeError(404));
 
       // populate product.mfr
       Product.populate(product, {path: 'mfr categories'}, function (err, product) {
-        if (err) throw err;
+        if (err) return next(err);
         render(product);
       });
 
     })
   }
 
-  function render (queriedEl){
+  function render (product){
     res.render('product/show', {
       title: '产品详细信息',
-      product: queriedEl
+      product: product
     })
   }
 }
 
 exports.list = function list(req, res) {
+  // TODO: SEO?? use !# for google ??
   var category = req.query.category
     , mfr = req.query.mfr
     , name = req.query.name
@@ -122,32 +142,53 @@ exports.list = function list(req, res) {
     })
   }
 }
-exports.edit = function edit(req, res, next) {
+exports.edit = function (req, res, next) {
   var id = req.params['_id'];
-
+  console.log(req.queriedEl);
   if(req.queriedEl) {
     return render(req.queriedEl);
   }
 
   function render (product) {
-    res.render('product/edit', {
+    res.render('product/add', {
       title: '编辑',
       product: product,
-      categExpanded: true
+      categExpanded: true,
+      valOptions: validationOptions
     })
   }
 
-  // never reach here:
   Product.findById(id).populate('categories').exec(function (err, product) {
-    if (err) throw err;
-    if (!product)  throw 404;
+    if (err) return next(err);
+    if (!product)  return next(404);
     render (product);
   })
 }
-exports.update = function update(req, res, next) {
 
-  function doUpdate(err, product) {
+exports.update = function update(req, res, next) {
+  var id = req.params['_id']
+    , product = req.body.product || {}
+    , img = req.files && req.files.image;
+
+  console.log(req.method);
+  console.log(img);
+
+  // also prevent malicious overriding:
+  product._id = id;
+  // TODO: change logic if Admin operation
+  product.mfr = req.session.mid;
+
+  if(!img) doUpdate();
+  else publishImg(img, 'product', doUpdate);
+
+  function doUpdate(err, img) {
     if (err) return next(err);
+
+    if(img) {
+      product.images = [img.imgUrl];
+      product.thumbnail = img.thumbUrl;
+    }
+
     Product.doUpdate(product, function (err, doc) {
       if (err) return next(err);
       req.flash('info', '编辑成功！');
@@ -156,28 +197,32 @@ exports.update = function update(req, res, next) {
     });
   }
 
-  var id = req.params['_id']
-    , product = req.body.product || {}
-    , image = req.files.image;
-
-  // also prevent malicious overriding:
-  product._id = id;
-  product.mfr = res.locals.mid;
-
-  uploadImage({image: image, doc: product, path: 'products'}, doUpdate);
-
 }
 
 exports.destroy = function destory(req, res, next) {
   var id = req.params['_id'];
+
+  // we could use async lib here (if this pyramid continues to grow)
   Product.findByIdAndRemove(id, function(err, doc) {
+    var imgUrl, thumbUrl;
     if(err) return next(err);
+    // we do img cleaning after res.redirect, enhancing user experience. (but harder to debug)
     req.flash('info', '删除成功');
     res.redirect('/products?mfr=' + doc.mfr);
+    if(imgUrl = Array.isArray(doc.images) && doc.images[0]) {
+      removeImg( imgUrl, function (err) {
+        if(err) return next(err);
+        if( thumbUrl = doc.thumbnail) {
+          removeImg( thumbUrl, function (err) {
+            if(err) return next(err);
+          });
+        }
+      });
+    }
   })
 }
 
-exports.prep = function (req, res, next) {
+function prep(req, res, next) {
   var id = req.params['_id']
     , mid
     , pop;
@@ -193,22 +238,127 @@ exports.prep = function (req, res, next) {
     if(!product) return next(404);
     req.queriedEl = product;
     if(mid && product.mfr._id.toString() === mid){
-      res.locals.isSelf = true;
+      req.user = req.user || {};
+      req.user.isSelf = res.locals.isSelf = true;
     }
     next();
   })
 };
 
 
+exports.inputValidate = function (req, res, next) {
+
+  db.multiArr.insert({"id" : "m1","category" : [["E", "B", "A"], ["F", "D", "A"]]})
+  db.multiArr.insert({"id" : "m2","category" : [["G", "C", "A"], ["H", "D", "A"]]})
+
+  db.multiArr.find( {
+    category: { $elemMatch: { $elemMatch : {"$in":["E"]}} }
+  })
 
 
 
+  // should only deal with xhr
+//  if(!req.xhr) return next(404);
+  // one field a time
+  // what about array?
+  /*var path = req.body.fieldName;
+  var value = req.body.value || null;
+
+  console.log(Product.schema.paths);
+  console.log(Product.schema.constructor.prototype.paths);
+  path = 'name';
+  value = "壳牌超凡喜列";
+
+  Product.create({
+    name: value
+  }, function (err, b) {
+    console.log(err, b);
+  })*/
 
 
+/*  var schemaType = Product.schema.path(path);
+
+  schemaType.doValidate(value, function (err){
+
+    if(err) {
+      res.send({valid: false, err: err, s: schemaType});
+    } else {
+      res.send({valid: true, s: schemaType});
+    }
+  }, new Product());*/
+};
+
+requireSelf = function (req, res, next) {
+
+    var id = req.params['_id']
+      , mid
+      , pop;
+
+    mid = req.session.mid;
+    // when edit, restrict mfr, or one can insert arbitrary product into others' account
+    pop = 'mfr categories';
+
+    Product.findById(id).populate(pop).exec( function (err, product) {
+      if(err) return next(err);
+      //TODO: maybe such error here reveals too much info:
+      if(!product) return next(404);
+      // cache it
+      req.queriedEl = product;
+      if(mid && product.mfr._id.toString() !== mid){
+        req.flash('info', '没有权限');
+        res.redirect('back');
+      }
+      req.isSelf = res.locals.isSelf = true;
+      next();
+    })
 
 
+};
 
 
+exports.hello2 = function (req, res, next) {
+  var gm = require('gm').subClass({ imageMagick: true });
+  var fs = require('fs');
+  /*fs.stat('d:/test-img/img.jpg', function (err, stat) {
+    console.log(err, stat);
+  });*/
+
+  /*var wstream = fs.createWriteStream('pipe.png');
+  gm('img.jpg')
+    .resize(100, 100)
+    .stream('png')
+    .pipe(wstream);*/
+  gm('img.jpg')
+    .thumb(100, 100, 'img-thumb.png', 75, function (err, b) {
+      console.log(err, b);
+    });
+
+
+  /*gm('img.jpg')
+    .stroke("#ffffff")
+    .drawCircle(10, 10, 20, 10)
+    .font("Helvetica.ttf", 12)
+    .drawText(30, 20, "GMagick!")
+    .write("drawing.png", function (err) {
+      if (!err) console.log('done');
+    });*/
+    /*.flip()
+    .magnify()
+    .rotate('green', 45)
+    .blur(7, 3)
+    .crop(300, 300, 150, 130)
+    .edge(3)
+    .write('img-gai.jpg', function (err) {
+      console.log(err);
+    });*/
+    /*.thumb(30, 30, 'img_thumb.jpg', 50, function (err) {
+      console.log(err, 'done');
+    })*/
+};
+
+
+exports.requireSelf = requireSelf;
+exports.prep = prep;
 
 
 
@@ -440,3 +590,5 @@ var hasPid = function (mid, pid, fn) {
     fn(~arr.indexOf(pid));
   })
 };
+
+

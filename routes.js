@@ -10,8 +10,10 @@ var permission = require('./controllers/permission')
   , requireLogin = permission.login
   , requireMfr = permission.mfr
   , requireNonMfr = permission.nonMfr
-  , requireSelf = permission.self
+  , requireSelf = permission.self()
   , requireAdmin = permission.admin
+
+//  , requirePSelf = requireSelf( {admin: true, fn: product.requireSelf} )
 
 var mongoose = require('mongoose')
   , Mfr = mongoose.model('Mfr')
@@ -20,6 +22,25 @@ var mongoose = require('mongoose')
 
 
 function startRoute(app) {
+
+  // test:
+
+  app.get('/hello', product.hello2);
+  app.post('/test2', function (req, res, next) {
+    res.send(JSON.stringify(true));
+  }).post ('/test3', function (req, res) {
+    console.log(req.body);
+    res.send('ok');
+  })
+  app.post('/test-upload', function (req, res,next) {
+    console.log(req.files);
+    setTimeout(function(){res.send(req.files);}, 5000);
+  });
+
+
+
+
+
 
   // TODO: use app.param?
 
@@ -32,9 +53,9 @@ function startRoute(app) {
   }
 
   // preparations
-  app.all('/users/:_id?/:op?', checkId, user.prep);
-  app.all('/mfrs/:_id?/:op?', checkId, mfr.prep);
-  app.all('/products/:_id?/:op?', checkId, product.prep);
+  app.all('/users/:_id/:op?', checkId, user.prep);
+  app.all('/mfrs/:_id/:op?', checkId, mfr.prep);
+  app.all('/products/:_id/:op?', checkId, product.prep);
   app.get('/sales', sale.prep);
 
 
@@ -47,6 +68,7 @@ function startRoute(app) {
   app.get('/products/:_id', product.show);
 
   app.get('/products/:_id/edit', requireSelf, product.edit);
+//  app.post('/products/:_id/edit', requireSelf, product.update);
   app.put('/products/:_id/edit', requireSelf, product.update);
   app.del('/products/:_id', requireSelf, product.destroy);
 
@@ -54,6 +76,9 @@ function startRoute(app) {
   // synonym: sign up
   app.get('/users/register', user.add);
   app.post('/users/register', user.create);
+
+  // check if a user already exists:
+  app.get('/users/userexists', user.checkUser);
 
   // TODO: see if loginGet & login can be congregated:
   app.get('/users/login', user.loginGet);
@@ -73,7 +98,7 @@ function startRoute(app) {
 
   app.get('/mfrs/:_id', mfr.show);
   app.get('/mfrs/:_id/edit', requireSelf, mfr.edit);
-  app.post('/mfrs/:_id/edit', requireSelf, mfr.update);
+  app.put('/mfrs/:_id/edit', requireSelf, mfr.update);
 
 
   app.get('/sales', requireSelf, sale.list)

@@ -6,12 +6,15 @@
     "start": "node app"
   },
   "dependencies": {
-    "express": "3.1.0",
+    "express": "3.x",
     "jade": "*",
     "mongodb": "*",
     "btoa": "*",
-    "mongoose": "3.6.9",
+    "mongoose": "3.x",
     "combohandler": "0.2.1",
-    "mongoose-unique-validator": "*"
+    "mongoose-unique-validator": "~0.3.0",
+    "async": "~0.2.10",
+    "underscore": "1.x",
+    "gm": "~1.14.2"
   }
 }

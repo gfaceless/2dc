@@ -1,4 +1,4 @@
-doctype 5
+doctype html
 html
   head
     block head
@@ -7,14 +7,20 @@ html
       block css
         link(rel='stylesheet', href='/stylesheets/normalize.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel='stylesheet', href='/css/layout.css')
+        link(rel='stylesheet', href='/css/style.css')
         link(rel='stylesheet', href='/stylesheets/category/list.css')
       block js
-        script(src="/yui/3.11.0/build/yui/yui-min.js")
+        //-script(src="/yui/3.11.0/build/yui/yui-min.js")
+      block template
   body
     include includes/header
-    #main
+    div#main
       include includes/message
       include includes/control
       block content
     include includes/footer
     block js-bottom
+      //- TODO: use the minified version in production
+      script(src="/vendor/jquery/dist/jquery.js")
+      script(src="/vendor/jquery-ui/ui/jquery-ui.js")

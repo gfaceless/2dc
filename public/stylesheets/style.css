@@ -33,6 +33,7 @@
     margin: 0 30px;
 }
 #siteSearchInput {
+    float: left;
     color: #000;
     margin: 0;
     width: 632px;
@@ -298,11 +299,6 @@ form input{
     font-size: 100%;
 }
 
-form.main{
-    margin: 20px auto;
-    font-size: 150%;
-}
-
 form.main label {
 
     width: 150px;
@@ -332,7 +328,7 @@ form.main label input {
 }
 
 /*form warning*/
-form .msg {
+/*form .msg {
     color: red;
     font-size: 80%;
     margin-left: 20px;
@@ -346,7 +342,7 @@ form .correct {
     color: #555;
     background: url('/images/icon-sprites.png') -61px -53px no-repeat;
 
-}
+}*/
 
 
 

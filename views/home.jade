@@ -3,14 +3,15 @@ extends layout
 append css
   link(rel="stylesheet", href="/stylesheets/home.css")
 append js-bottom
-  script(src="/javascripts/slides.js")
+  script(src="/vendor/jquery-timer/jquery.timer.js")
+  script(src="/js/slideshow.js")
 block content
   //a(href="/products").block 所有产品
   //a(href="/mfrs").block 所有企业
 
   include category/list
-  // slides
-  #main-slides
+
+  #main-slideshow
     ul.slides
       li.active: img(src="/images/slides/1.jpg")
       li: img(src="/images/slides/2.jpg")

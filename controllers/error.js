@@ -1,11 +1,12 @@
 var error = function (err, req, res, next) {
   // `throw 500` is different from `throw new Error(500)`
-  // the former automatically gives it status property.
+  // the former automatically gives it a status property.
   // next(404) also pass an error obj, who has status 404.
   // the `makeError` arbitrary function can pass msg too (the 2nd param)
 
   console.log('here we are at the custom error handler,\nthe error is:\n')
   console.log(err);
+  if(typeof err === "number") err = {status: err};
   switch (err.status) {
     case 404:
       return error.e404(req, res, next);
